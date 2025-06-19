@@ -1,0 +1,383 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== CORE MODELS =====
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      UserRole @default(MAKLER)
+  tenantId  String? // Multi-tenant: Links user to specific PMA instance
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  makler   Makler?
+  sessions Session[]
+  tenant   Tenant?   @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@map("users")
+}
+
+model Tenant {
+  id        String  @id @default(cuid())
+  name      String // "PMA München GmbH"
+  subdomain String  @unique // "muenchen" -> muenchen.pma-leadgen.de
+  domain    String? @unique // Optional custom domain: "leads.pma-muenchen.de"
+  isActive  Boolean @default(true)
+
+  // Billing & Limits
+  plan       TenantPlan @default(STARTER)
+  maxMaklers Int        @default(5)
+  maxLeads   Int        @default(1000)
+
+  // Compliance
+  dataRegion  String  @default("EU")
+  gdprContact String? // Data Protection Officer contact
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  users        User[]
+  maklers      Makler[]
+  campaigns    Campaign[]
+  leads        Lead[]
+  landingPages LandingPage[]
+
+  @@map("tenants")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Makler {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  tenantId   String // Multi-tenant: Each makler belongs to a PMA instance
+  firstName  String
+  lastName   String
+  company    String
+  phone      String?
+  website    String?
+  address    String?
+  city       String?
+  postalCode String?
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Branding
+  logo           String?
+  primaryColor   String  @default("#2563eb")
+  secondaryColor String  @default("#64748b")
+
+  // Relations
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  campaigns    Campaign[]
+  leads        Lead[]
+  landingPages LandingPage[]
+
+  @@map("maklers")
+}
+
+// ===== CAMPAIGN MODELS =====
+
+model Campaign {
+  id          String         @id @default(cuid())
+  maklerId    String
+  tenantId    String // Multi-tenant: Campaigns belong to PMA instance
+  name        String
+  description String?
+  status      CampaignStatus @default(ACTIVE)
+  budget      Float
+  spent       Float          @default(0)
+  platform    Platform
+  targeting   Json // Flexible targeting options
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  // Performance Metrics
+  impressions    Int   @default(0)
+  clicks         Int   @default(0)
+  leads          Int   @default(0)
+  conversions    Int   @default(0)
+  ctr            Float @default(0)
+  cpl            Float @default(0)
+  conversionRate Float @default(0)
+
+  // Relations
+  makler       Makler        @relation(fields: [maklerId], references: [id], onDelete: Cascade)
+  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  leadSources  Lead[]
+  landingPages LandingPage[]
+
+  @@map("campaigns")
+}
+
+// ===== LEAD MODELS =====
+
+model Lead {
+  id         String  @id @default(cuid())
+  maklerId   String
+  tenantId   String // Multi-tenant: Leads belong to PMA instance
+  campaignId String?
+
+  // Personal Info
+  firstName   String
+  lastName    String
+  email       String
+  phone       String?
+  dateOfBirth DateTime?
+  address     String?
+  city        String?
+  postalCode  String?
+
+  // Lead Management
+  status   LeadStatus @default(NEU)
+  score    Int        @default(0)
+  source   String?
+  interest String?
+  budget   Float?
+  notes    String?
+
+  // Tracking
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  lastContact  DateTime?
+  nextFollowUp DateTime?
+
+  // GDPR
+  consentGiven     Boolean   @default(false)
+  consentDate      DateTime?
+  marketingConsent Boolean   @default(false)
+
+  // Relations
+  makler         Makler          @relation(fields: [maklerId], references: [id], onDelete: Cascade)
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  campaign       Campaign?       @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  communications Communication[]
+  activities     LeadActivity[]
+
+  @@map("leads")
+}
+
+model Communication {
+  id        String                 @id @default(cuid())
+  leadId    String
+  type      CommunicationType
+  direction CommunicationDirection
+  subject   String?
+  content   String
+  status    CommunicationStatus    @default(SENT)
+  sentAt    DateTime               @default(now())
+  readAt    DateTime?
+
+  // Relations
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("communications")
+}
+
+model LeadActivity {
+  id          String           @id @default(cuid())
+  leadId      String
+  type        LeadActivityType
+  description String
+  metadata    Json?
+  createdAt   DateTime         @default(now())
+
+  // Relations
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@map("lead_activities")
+}
+
+// ===== LANDING PAGE MODELS =====
+
+model LandingPage {
+  id         String              @id @default(cuid())
+  maklerId   String
+  tenantId   String // Multi-tenant: Landing pages belong to PMA instance
+  campaignId String?
+  name       String
+  slug       String              @unique
+  template   LandingPageTemplate
+  status     LandingPageStatus   @default(DRAFT)
+
+  // Content
+  headline    String
+  subheadline String?
+  content     Json // Flexible content structure
+  formFields  Json // Form configuration
+
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+
+  // Analytics
+  views          Int   @default(0)
+  submissions    Int   @default(0)
+  conversionRate Float @default(0)
+
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+
+  // Relations
+  makler   Makler    @relation(fields: [maklerId], references: [id], onDelete: Cascade)
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  campaign Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+
+  @@map("landing_pages")
+}
+
+// ===== SYSTEM MODELS =====
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  name      String
+  key       String   @unique
+  platform  Platform
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("api_keys")
+}
+
+model SystemSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
+// ===== ENUMS =====
+
+enum UserRole {
+  SUPER_ADMIN // Platform admin (your team)
+  TENANT_ADMIN // PMA organization admin
+  MAKLER // Individual broker
+  VIEWER // Read-only access
+}
+
+enum TenantPlan {
+  STARTER // Up to 5 Maklers, 1000 Leads
+  PROFESSIONAL // Up to 25 Maklers, 10000 Leads
+  ENTERPRISE // Unlimited
+}
+
+enum CampaignStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ARCHIVED
+}
+
+enum Platform {
+  FACEBOOK
+  INSTAGRAM
+  GOOGLE
+  YOUTUBE
+  LINKEDIN
+  TIKTOK
+}
+
+enum LeadStatus {
+  NEU
+  KONTAKTIERT
+  QUALIFIZIERT
+  WARM
+  HEISS
+  TERMIN_VEREINBART
+  PRAESENTATION_GEHALTEN
+  ABGESCHLOSSEN
+  VERLOREN
+  NICHT_INTERESSIERT
+}
+
+enum CommunicationType {
+  EMAIL
+  PHONE
+  WHATSAPP
+  SMS
+  LETTER
+  VIDEO_CALL
+  IN_PERSON
+}
+
+enum CommunicationDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum CommunicationStatus {
+  DRAFT
+  SENT
+  DELIVERED
+  READ
+  REPLIED
+  FAILED
+  BOUNCED
+}
+
+enum LeadActivityType {
+  CREATED
+  STATUS_CHANGED
+  CONTACTED
+  NOTE_ADDED
+  SCORE_UPDATED
+  FOLLOW_UP_SCHEDULED
+  DOCUMENT_UPLOADED
+  MEETING_SCHEDULED
+  CONTRACT_SIGNED
+}
+
+enum LandingPageTemplate {
+  ALTERSVORSORGE
+  BAUFINANZIERUNG
+  KRANKENVERSICHERUNG
+  LEBENSVERSICHERUNG
+  BERUFSUNFAEHIGKEIT
+  RIESTER_RENTE
+  RUERUP_RENTE
+  CUSTOM
+}
+
+enum LandingPageStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+}
