@@ -27,8 +27,8 @@ export async function POST(request: NextRequest) {
       }
 
       const token = jwt.sign(
-        { userId: user.id, role: user.role, tenantId: user.tenantId },
-        process.env.JWT_SECRET || 'fallback-secret',
+        { userId: user.id, email: user.email },
+        process.env.JWT_SECRET || 'insurance-ai-secret-key-2024-production-fallback',
         { expiresIn: '7d' }
       );
 
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'insurance-ai-secret-key-2024-production-fallback') as any;
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },

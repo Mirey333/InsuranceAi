@@ -11,10 +11,10 @@ async function verifyToken(request: NextRequest) {
     throw new Error('Nicht authentifiziert');
   }
 
-  const decoded = jwt.verify(
-    token, 
-    process.env.JWT_SECRET || 'fallback-secret'
-  ) as any;
+      const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || 'insurance-ai-secret-key-2024-production-fallback'
+    ) as any;
 
   const user = await prisma.user.findUnique({
     where: { id: decoded.userId },

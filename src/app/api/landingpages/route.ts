@@ -12,7 +12,7 @@ async function verifyToken(request: NextRequest) {
   }
   
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'insurance-ai-secret-key-2024-production-fallback') as any;
     return decoded;
   } catch (error) {
     throw new Error('Ungültiges Token');
