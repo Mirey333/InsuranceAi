@@ -26,6 +26,7 @@ async function main() {
       role: 'MAKLER',
       makler: {
         create: {
+          tenant: 'demo',
           firstName: 'Max',
           lastName: 'Mustermann',
           company: 'PMA Finanzberatung München',

@@ -1,129 +1,96 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { 
-  Home,
-  BarChart3,
-  Target,
-  Globe,
-  Users,
-  FileDown,
+  Building2, 
+  Users, 
+  Target, 
+  BarChart3, 
+  FileDown, 
+  PaintBucket,
   Settings,
-  HelpCircle,
-  LogOut,
-  Sparkles,
-  LogIn,
-  Shield,
-  User
+  Layers,
+  Puzzle,
+  Menu,
+  X
 } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useState } from 'react';
 
-export default function AuthNavigation() {
+export default function DemoNavigation() {
   const pathname = usePathname();
-  const router = useRouter();
-  const { user, loading, isAuthenticated, logout, isSuperAdmin, isTenantAdmin, getCurrentTenant } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Get current tenant
-  const tenant = getCurrentTenant();
-
-  // Navigation for authenticated users
-  const authenticatedNavigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: BarChart3, roles: ['all'] },
-    { name: 'Leads', href: '/leads', icon: Users, roles: ['all'] },
-    { name: 'Kampagnen', href: '/campaigns', icon: Target, roles: ['all'] },
-    { name: 'Landingpages', href: '/landingpage-builder', icon: Globe, roles: ['admin', 'tenant_admin'] },
-    { name: 'PMA Export', href: '/export', icon: FileDown, roles: ['all'] },
-  ];
-
-  // Navigation for guests
-  const guestNavigation = [
-    { name: 'Übersicht', href: '/', icon: Home },
-  ];
-
-  const handleLogout = async () => {
-    try {
-      logout();
-      router.push('/');
-    } catch (error) {
-      console.error('Logout error:', error);
+  const navigation = [
+    {
+      name: 'Übersicht',
+      href: '/',
+      icon: Building2,
+    },
+    {
+      name: 'Module',
+      href: '/modules',
+      icon: Puzzle,
+    },
+    {
+      name: 'Demo',
+      href: '/demo',
+      icon: Settings,
+    },
+    {
+      name: 'Dashboard',
+      href: '/dashboard',
+      icon: BarChart3,
+    },
+    {
+      name: 'Kampagnen',
+      href: '/campaigns',
+      icon: Target,
+    },
+    {
+      name: 'Leads',
+      href: '/leads',
+      icon: Users,
+    },
+    {
+      name: 'Landing Pages',
+      href: '/landingpage-builder',
+      icon: PaintBucket,
+    },
+    {
+      name: 'Export',
+      href: '/export',
+      icon: FileDown,
     }
-  };
-
-  const isActive = (href: string) => {
-    if (href === '/' && pathname === '/') return true;
-    if (href !== '/' && pathname.startsWith(href)) return true;
-    return false;
-  };
-
-  // Filter navigation based on user role
-  const getFilteredNavigation = () => {
-    if (!isAuthenticated) return guestNavigation;
-    
-    return authenticatedNavigation.filter(item => {
-      if (item.roles.includes('all')) return true;
-      if (item.roles.includes('admin') && isSuperAdmin) return true;
-      if (item.roles.includes('tenant_admin') && isTenantAdmin) return true;
-      return false;
-    });
-  };
-
-  const navigation = getFilteredNavigation();
-
-  // Show loading state
-  if (loading) {
-    return (
-      <div className="bg-white/70 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="animate-pulse flex space-x-4">
-              <div className="rounded-lg bg-gray-200 h-10 w-10"></div>
-              <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-24"></div>
-                <div className="h-3 bg-gray-200 rounded w-32"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  ];
 
   return (
-    <div className="bg-white/70 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-            <div className="bg-gradient-to-r from-primary-600 to-primary-700 p-2 rounded-lg">
-              <Sparkles className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">PMA Leadgen</h1>
-              {isAuthenticated ? (
-                <p className="text-xs text-gray-500">
-                  {tenant?.name || 'Multi-Tenant Platform'}
-                  {isSuperAdmin && ' (Super Admin)'}
-                  {isTenantAdmin && ' (Admin)'}
-                </p>
-              ) : (
-                <p className="text-xs text-gray-500">Lead-Management-Platform</p>
-              )}
-            </div>
+          <Link href="/" className="flex items-center space-x-3">
+            <img src="/logo-icon.svg" alt="InsureAI Pro" className="w-8 h-8" />
+            <span className="text-xl font-semibold text-gray-900">
+              InsureAI Pro
+            </span>
           </Link>
 
-          {/* Navigation */}
-          <nav className="hidden lg:flex space-x-8">
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-8">
             {navigation.map((item) => {
+              const isActive = pathname === item.href;
               const Icon = item.icon;
+              
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    isActive(item.href)
-                      ? 'bg-primary-100 text-primary-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  className={`flex items-center space-x-2 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    isActive
+                      ? 'text-blue-700 bg-blue-50'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   }`}
                 >
                   <Icon className="h-4 w-4" />
@@ -131,123 +98,72 @@ export default function AuthNavigation() {
                 </Link>
               );
             })}
-          </nav>
+          </div>
 
-          {/* User Menu */}
+          {/* Right side */}
           <div className="flex items-center space-x-4">
-            {isAuthenticated ? (
-              <>
-                {/* User Info */}
-                <div className="hidden md:block text-right">
-                  <p className="text-sm font-medium text-gray-900 flex items-center">
-                    {user?.makler?.firstName ? `${user.makler.firstName} ${user.makler.lastName}` : user?.email}
-                    {isSuperAdmin && <Shield className="h-3 w-3 ml-1 text-red-500" />}
-                    {isTenantAdmin && <User className="h-3 w-3 ml-1 text-blue-500" />}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {user?.role === 'SUPER_ADMIN' ? 'Super Administrator' : 
-                     user?.role === 'TENANT_ADMIN' ? 'Tenant Administrator' : 
-                     'Makler'} • {tenant?.name}
-                  </p>
-                </div>
-                
-                {/* Action Buttons */}
-                <div className="flex items-center space-x-2">
-                  <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                    <Settings className="h-5 w-5" />
-                  </button>
-                  <button className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors">
-                    <HelpCircle className="h-5 w-5" />
-                  </button>
-                  <button 
-                    onClick={handleLogout}
-                    className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
-                    title="Ausloggen"
-                  >
-                    <LogOut className="h-5 w-5" />
-                  </button>
-                </div>
-              </>
-            ) : (
-              /* Guest Actions */
-              <div className="flex items-center space-x-3">
-                <Link 
-                  href="/login"
-                  className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                >
-                  <LogIn className="h-4 w-4" />
-                  <span>Anmelden</span>
-                </Link>
-                <Link 
-                  href="/register"
-                  className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
-                >
-                  <User className="h-4 w-4" />
-                  <span>Registrieren</span>
-                </Link>
-              </div>
-            )}
+            <div className="hidden lg:flex items-center space-x-3">
+              <span className="text-sm text-gray-500">Demo Makler GmbH</span>
+              <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                STARTER
+              </span>
+            </div>
+            
+            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+              Einstellungen
+            </button>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        <div className="lg:hidden pb-4">
-          <div className="grid grid-cols-3 gap-2">
-            {navigation.slice(0, 6).map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`flex flex-col items-center space-y-1 p-3 rounded-lg text-xs font-medium transition-colors ${
-                    isActive(item.href)
-                      ? 'bg-primary-100 text-primary-700'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                  }`}
-                >
-                  <Icon className="h-5 w-5" />
-                  <span>{item.name}</span>
-                </Link>
-              );
-            })}
-          </div>
-          
-          {/* Mobile User Actions */}
-          {isAuthenticated ? (
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-900">
-                    {user?.makler?.firstName ? `${user.makler.firstName} ${user.makler.lastName}` : user?.email}
-                  </p>
-                  <p className="text-xs text-gray-500">{tenant?.name}</p>
+        {mobileMenuOpen && (
+          <div className="lg:hidden border-t border-gray-200">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              {navigation.map((item) => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
+                
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium ${
+                      isActive
+                        ? 'text-blue-700 bg-blue-50'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
+              
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                <div className="flex items-center justify-between px-3 py-2">
+                  <span className="text-sm text-gray-500">Demo Makler GmbH</span>
+                  <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                    STARTER
+                  </span>
                 </div>
-                <button 
-                  onClick={handleLogout}
-                  className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
-                >
-                  <LogOut className="h-5 w-5" />
-                </button>
               </div>
             </div>
-          ) : (
-            <div className="mt-4 pt-4 border-t border-gray-200 flex space-x-3">
-              <Link 
-                href="/login"
-                className="flex-1 text-center py-2 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                Anmelden
-              </Link>
-              <Link 
-                href="/register"
-                className="flex-1 text-center py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
-              >
-                Registrieren
-              </Link>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    </div>
+    </nav>
   );
 } 

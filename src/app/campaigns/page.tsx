@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useState } from 'react';
 import { 
   Plus, 
   Play, 
@@ -55,256 +54,139 @@ interface Campaign {
   qualifiedLeads: number;
 }
 
-interface CampaignsData {
-  campaigns: Campaign[];
-  stats: {
-    total: number;
-    active: number;
-    paused: number;
-    completed: number;
-    totalSpent: number;
-    totalLeads: number;
-    avgCPL: number;
-    avgCTR: number;
-  };
-  pagination: {
-    total: number;
-    limit: number;
-    offset: number;
-    hasMore: boolean;
-  };
-  user: {
-    name: string;
-    email: string;
-    tenant: string;
-    role: string;
-  };
-}
-
 export default function CampaignsPage() {
-  const { user, isAuthenticated } = useAuth();
-  const [campaignsData, setCampaignsData] = useState<CampaignsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterPlatform, setFilterPlatform] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch campaigns data from API
-  const fetchCampaignsData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const params = new URLSearchParams();
-      if (filterStatus !== 'all') params.append('status', filterStatus);
-      if (filterPlatform !== 'all') params.append('platform', filterPlatform);
-      
-      const response = await fetch(`/api/campaigns?${params.toString()}`);
-      
-      if (!response.ok) {
-        if (response.status === 401) {
-          setError('Nicht authentifiziert. Bitte melden Sie sich an.');
-          return;
-        }
-        throw new Error('Fehler beim Laden der Kampagnen-Daten');
-      }
-
-      const data = await response.json();
-      setCampaignsData(data);
-    } catch (err) {
-      console.error('Campaigns fetch error:', err);
-      setError(err instanceof Error ? err.message : 'Unbekannter Fehler');
-    } finally {
-      setLoading(false);
-    }
+  // Demo-Daten - sofort verfügbar
+  const stats = {
+    total: 8,
+    active: 5,
+    paused: 2,
+    completed: 1,
+    totalSpent: 4265,
+    totalLeads: 89,
+    avgCPL: 47.90,
+    avgCTR: 3.4
   };
 
-  // Effect to fetch data on component mount and filter changes
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchCampaignsData();
-    }
-  }, [isAuthenticated, filterStatus, filterPlatform]);
-
-  // Redirect to login if not authenticated
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Anmeldung erforderlich</h1>
-          <p className="text-gray-600 mb-6">Sie müssen sich anmelden, um Kampagnen zu verwalten.</p>
-          <button 
-            onClick={() => window.location.href = '/'}
-            className="btn-primary"
-          >
-            Zur Anmeldung
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Loading state
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary-600" />
-          <p className="text-gray-600">Kampagnen werden geladen...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="text-center">
-          <AlertCircle className="h-8 w-8 mx-auto mb-4 text-red-500" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Fehler</h1>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <button 
-            onClick={fetchCampaignsData}
-            className="btn-primary flex items-center mx-auto"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Erneut versuchen
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // No data state
-  if (!campaignsData) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="text-center">
-          <p className="text-gray-600">Keine Daten verfügbar</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Use real data from API
-  const stats = campaignsData.stats;
-  const campaigns = campaignsData.campaigns || [];
-
-  // Demo Kampagnen-Daten (Fallback)
-  const fallbackCampaigns = [
+  const campaigns: Campaign[] = [
     {
       id: '1',
       name: 'Altersvorsorge Q1 2025',
       platform: 'Facebook',
       status: 'active',
-      category: 'altersvorsorge',
-      startDate: '2025-01-15',
+      category: 'Altersvorsorge',
+      startDate: '2025-01-01',
       endDate: '2025-03-31',
       budget: {
         daily: 25,
-        total: 800,
-        spent: 245
+        total: 2250,
+        spent: 445
       },
       performance: {
-        impressions: 15420,
-        clicks: 586,
+        impressions: 34520,
+        clicks: 1208,
         leads: 23,
-        ctr: 3.8,
-        cpl: 10.65,
-        conversionRate: 3.9
+        ctr: 3.5,
+        cpl: 19.35,
+        conversionRate: 1.9
       },
       targeting: {
-        ageRange: '35-55',
-        location: 'München, Bayern',
-        interests: ['Finanzen', 'Vorsorge', 'Familie']
+        ageRange: '30-55',
+        location: 'Deutschland',
+        interests: ['Altersvorsorge', 'Finanzen', 'Investment']
       },
-      createdAt: '2025-01-15'
+      createdAt: '2025-01-01',
+      qualifiedLeads: 18
     },
     {
       id: '2',
       name: 'Baufinanzierung Winter',
       platform: 'Google',
       status: 'active',
-      category: 'baufinanzierung',
-      startDate: '2025-01-10',
+      category: 'Baufinanzierung',
+      startDate: '2024-12-01',
       endDate: '2025-02-28',
       budget: {
-        daily: 40,
-        total: 1200,
-        spent: 890
+        daily: 45,
+        total: 4050,
+        spent: 1890
       },
       performance: {
-        impressions: 21200,
-        clicks: 892,
-        leads: 45,
-        ctr: 4.2,
-        cpl: 19.78,
-        conversionRate: 5.0
+        impressions: 28750,
+        clicks: 945,
+        leads: 34,
+        ctr: 3.3,
+        cpl: 55.59,
+        conversionRate: 3.6
       },
       targeting: {
-        ageRange: '28-45',
-        location: 'München, Augsburg, Nürnberg',
-        interests: ['Immobilien', 'Finanzierung', 'Eigenheim']
+        ageRange: '25-45',
+        location: 'Deutschland',
+        interests: ['Immobilien', 'Hausbau', 'Finanzierung']
       },
-      createdAt: '2025-01-10'
+      createdAt: '2024-12-01',
+      qualifiedLeads: 28
     },
     {
       id: '3',
-      name: 'KV für Selbstständige',
+      name: 'PKV für Selbstständige',
       platform: 'Instagram',
       status: 'paused',
-      category: 'krankenversicherung',
-      startDate: '2025-01-05',
-      endDate: '2025-02-15',
+      category: 'Krankenversicherung',
+      startDate: '2024-11-15',
+      endDate: '2025-01-31',
       budget: {
         daily: 20,
-        total: 600,
-        spent: 234
+        total: 1400,
+        spent: 680
       },
       performance: {
-        impressions: 8050,
-        clicks: 234,
-        leads: 12,
-        ctr: 2.9,
-        cpl: 19.50,
-        conversionRate: 5.1
+        impressions: 19420,
+        clicks: 623,
+        leads: 15,
+        ctr: 3.2,
+        cpl: 45.33,
+        conversionRate: 2.4
       },
       targeting: {
-        ageRange: '25-40',
+        ageRange: '25-50',
         location: 'Deutschland',
-        interests: ['Selbstständigkeit', 'Freiberufler', 'Gesundheit']
+        interests: ['Selbstständig', 'Krankenversicherung', 'Gesundheit']
       },
-      createdAt: '2025-01-05'
+      createdAt: '2024-11-15',
+      qualifiedLeads: 12
     },
     {
       id: '4',
       name: 'Lebensversicherung Familien',
-      platform: 'YouTube',
-      status: 'completed',
-      category: 'lebensversicherung',
-      startDate: '2024-12-01',
-      endDate: '2024-12-31',
+      platform: 'Facebook',
+      status: 'active',
+      category: 'Lebensversicherung',
+      startDate: '2025-01-10',
+      endDate: '2025-04-10',
       budget: {
         daily: 30,
-        total: 900,
-        spent: 900
+        total: 2700,
+        spent: 390
       },
       performance: {
-        impressions: 18500,
-        clicks: 740,
-        leads: 37,
-        ctr: 4.0,
-        cpl: 24.32,
-        conversionRate: 5.0
+        impressions: 22100,
+        clicks: 787,
+        leads: 17,
+        ctr: 3.6,
+        cpl: 22.94,
+        conversionRate: 2.2
       },
       targeting: {
         ageRange: '30-50',
-        location: 'Bayern',
-        interests: ['Familie', 'Absicherung', 'Lebensversicherung']
+        location: 'Deutschland',
+        interests: ['Familie', 'Lebensversicherung', 'Vorsorge']
       },
-      createdAt: '2024-12-01'
+      createdAt: '2025-01-10',
+      qualifiedLeads: 14
     }
   ];
 
@@ -345,7 +227,7 @@ export default function CampaignsPage() {
 
   // Use campaigns for empty state fallback
   const displayCampaigns = filteredCampaigns.length > 0 ? filteredCampaigns : 
-    (campaigns.length === 0 ? fallbackCampaigns.slice(0, 3) : filteredCampaigns);
+    (campaigns.length === 0 ? campaigns.slice(0, 3) : filteredCampaigns);
 
   const totalStats = stats;
 
@@ -357,8 +239,8 @@ export default function CampaignsPage() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Kampagnen-Management</h1>
             <p className="text-gray-600">
-              Willkommen zurück, {campaignsData.user?.name}! 
-              Verwalten Sie Ihre Leadgenerierungs-Kampagnen für {campaignsData.user?.tenant}.
+                             Willkommen zurück, Max Mustermann! 
+               Verwalten Sie Ihre Leadgenerierungs-Kampagnen für Demo Makler GmbH.
             </p>
           </div>
           
@@ -471,9 +353,6 @@ export default function CampaignsPage() {
           <div className="px-6 py-4 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900">
               Kampagnen ({displayCampaigns.length})
-              {campaigns.length === 0 && (
-                <span className="text-sm font-normal text-gray-500 ml-2">(Demo-Daten)</span>
-              )}
             </h3>
           </div>
 

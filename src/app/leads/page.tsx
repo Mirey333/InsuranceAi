@@ -1,7 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useState } from 'react';
 import { 
   Phone, 
   Mail, 
@@ -58,22 +57,7 @@ interface Lead {
   }>;
 }
 
-interface LeadsData {
-  leads: Lead[];
-  pagination: {
-    current: number;
-    total: number;
-    count: number;
-    limit: number;
-  };
-}
-
 export default function LeadsPage() {
-  const { isAuthenticated, user } = useAuth();
-  const [leadsData, setLeadsData] = useState<LeadsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
   // Filter states
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -91,59 +75,106 @@ export default function LeadsPage() {
     { id: 'VERLOREN', name: 'Verloren', color: 'bg-gray-100 text-gray-600' }
   ];
 
-  // Fetch leads data
-  const fetchLeads = async () => {
-    if (!isAuthenticated) return;
-    
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const params = new URLSearchParams();
-      if (selectedStatus && selectedStatus !== 'all') {
-        params.append('status', selectedStatus);
-      }
-      if (searchTerm) {
-        params.append('search', searchTerm);
-      }
-      params.append('page', currentPage.toString());
-      params.append('limit', '20');
-
-      const response = await fetch(`/api/leads?${params.toString()}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error('Nicht authentifiziert');
-        }
-        throw new Error('Fehler beim Laden der Leads');
-      }
-
-      const data = await response.json();
-      setLeadsData(data);
-    } catch (err) {
-      console.error('Error fetching leads:', err);
-      setError(err instanceof Error ? err.message : 'Unbekannter Fehler');
-    } finally {
-      setLoading(false);
+  // Demo-Daten
+  const leads: Lead[] = [
+    {
+      id: '1',
+      firstName: 'Max',
+      lastName: 'Mustermann',
+      email: 'max.mustermann@email.de',
+      phone: '+49 171 123 4567',
+      status: 'HEISS',
+      score: 95,
+      interest: 'Altersvorsorge',
+      source: 'Facebook Ads',
+      budget: 500,
+      location: 'München',
+      age: 45,
+      createdAt: '2025-01-20',
+      campaign: {
+        id: '1',
+        name: 'Altersvorsorge Q1 2025'
+      },
+      communications: [
+        { id: '1', type: 'email', sentAt: '2025-01-20', status: 'delivered' },
+        { id: '2', type: 'phone', sentAt: '2025-01-19', status: 'completed' }
+      ],
+      activities: [
+        { id: '1', type: 'status_change', description: 'Status geändert zu "Heiß"', createdAt: '2025-01-20' }
+      ]
+    },
+    {
+      id: '2',
+      firstName: 'Anna',
+      lastName: 'Schmidt',
+      email: 'anna.schmidt@web.de',
+      phone: '+49 160 987 6543',
+      status: 'WARM',
+      score: 78,
+      interest: 'Baufinanzierung',
+      source: 'Google Ads',
+      budget: 800,
+      location: 'Hamburg',
+      age: 32,
+      createdAt: '2025-01-19',
+      campaign: {
+        id: '2',
+        name: 'Baufinanzierung Winter'
+      },
+      communications: [
+        { id: '3', type: 'email', sentAt: '2025-01-19', status: 'opened' }
+      ],
+      activities: [
+        { id: '2', type: 'lead_created', description: 'Lead erstellt', createdAt: '2025-01-19' }
+      ]
+    },
+    {
+      id: '3',
+      firstName: 'Thomas',
+      lastName: 'Weber',
+      email: 'thomas.weber@gmail.com',
+      phone: '+49 152 555 7890',
+      status: 'QUALIFIZIERT',
+      score: 67,
+      interest: 'PKV',
+      source: 'Instagram',
+      budget: 300,
+      location: 'Berlin',
+      age: 38,
+      createdAt: '2025-01-18',
+      campaign: {
+        id: '3',
+        name: 'PKV für Selbstständige'
+      },
+      communications: [],
+      activities: [
+        { id: '3', type: 'form_submitted', description: 'Formular ausgefüllt', createdAt: '2025-01-18' }
+      ]
+    },
+    {
+      id: '4',
+      firstName: 'Lisa',
+      lastName: 'Müller',
+      email: 'lisa.mueller@yahoo.de',
+      phone: '+49 175 444 1234',
+      status: 'NEU',
+      score: 45,
+      interest: 'Lebensversicherung',
+      source: 'Facebook',
+      budget: 200,
+      location: 'Köln',
+      age: 29,
+      createdAt: '2025-01-17',
+      campaign: {
+        id: '4',
+        name: 'Lebensversicherung Familien'
+      },
+      communications: [],
+      activities: [
+        { id: '4', type: 'lead_created', description: 'Lead erstellt', createdAt: '2025-01-17' }
+      ]
     }
-  };
-
-  // Effect for initial load and filter changes
-  useEffect(() => {
-    fetchLeads();
-  }, [isAuthenticated, selectedStatus, searchTerm, currentPage]);
-
-  // Search handler with debounce
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setCurrentPage(1); // Reset to first page on search
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
+  ];
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-600';
@@ -173,73 +204,6 @@ export default function LeadsPage() {
     }).format(budget);
   };
 
-  // Show login prompt if not authenticated
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Anmeldung erforderlich</h2>
-          <p className="text-gray-600">Sie müssen sich anmelden, um Ihre Leads zu sehen.</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Loading state
-  if (loading && !leadsData) {
-    return (
-      <div className="min-h-screen">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="animate-pulse space-y-6">
-            <div className="h-8 bg-gray-200 rounded w-64"></div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-24 bg-gray-200 rounded-lg"></div>
-              ))}
-            </div>
-            <div className="h-96 bg-gray-200 rounded-lg"></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className="min-h-screen">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">
-            <AlertCircle className="h-16 w-16 text-red-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Fehler beim Laden</h2>
-            <p className="text-gray-600 mb-4">{error}</p>
-            <button 
-              onClick={fetchLeads}
-              className="btn-primary"
-            >
-              <RefreshCw className="h-5 w-5 mr-2" />
-              Erneut versuchen
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const leads = leadsData?.leads || [];
-  const pagination = leadsData?.pagination;
-
-  // Calculate stats from current leads
-  const totalLeads = pagination?.count || 0;
-  const avgScore = leads.length > 0 ? leads.reduce((sum, lead) => sum + lead.score, 0) / leads.length : 0;
-  const todayFollowUps = leads.filter(lead => 
-    lead.activities && lead.activities.some(activity => 
-      activity.type === 'FOLLOW_UP' && 
-      new Date(activity.createdAt).toDateString() === new Date().toDateString()
-    )
-  ).length;
-
   return (
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -249,19 +213,10 @@ export default function LeadsPage() {
             <h1 className="text-2xl font-bold text-gray-900">Lead-Management</h1>
             <p className="text-gray-600">
               Verwalten Sie Ihre Leads durch die gesamte Sales-Pipeline
-              {user?.makler && ` • ${user.makler.firstName} ${user.makler.lastName}`}
             </p>
           </div>
           
           <div className="flex space-x-3">
-            <button 
-              onClick={fetchLeads}
-              disabled={loading}
-              className="btn-secondary"
-            >
-              <RefreshCw className={`h-5 w-5 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Aktualisieren
-            </button>
             <button className="btn-secondary">
               <FileDown className="h-5 w-5 mr-2" />
               PMA Export
@@ -279,7 +234,7 @@ export default function LeadsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Gesamt Leads</p>
-                <p className="text-3xl font-bold text-gray-900">{totalLeads}</p>
+                <p className="text-3xl font-bold text-gray-900">{leads.length}</p>
               </div>
               <div className="bg-blue-100 p-3 rounded-lg">
                 <User className="h-6 w-6 text-blue-600" />
@@ -291,24 +246,12 @@ export default function LeadsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Ø Lead Score</p>
-                <p className={`text-3xl font-bold ${getScoreColor(avgScore)}`}>
-                  {Math.round(avgScore)}
+                <p className={`text-3xl font-bold ${getScoreColor(leads.reduce((sum, lead) => sum + lead.score, 0) / leads.length)}`}>
+                  {Math.round(leads.reduce((sum, lead) => sum + lead.score, 0) / leads.length)}
                 </p>
               </div>
               <div className="bg-yellow-100 p-3 rounded-lg">
                 <Star className="h-6 w-6 text-yellow-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="glass-card p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Follow-ups heute</p>
-                <p className="text-3xl font-bold text-gray-900">{todayFollowUps}</p>
-              </div>
-              <div className="bg-orange-100 p-3 rounded-lg">
-                <Calendar className="h-6 w-6 text-orange-600" />
               </div>
             </div>
           </div>
@@ -343,7 +286,7 @@ export default function LeadsPage() {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                Alle ({totalLeads})
+                Alle ({leads.length})
               </button>
               {stages.map((stage) => {
                 const count = leads.filter(lead => lead.status === stage.id).length;
@@ -509,41 +452,6 @@ export default function LeadsPage() {
                   </div>
                 ))}
               </div>
-
-              {/* Pagination */}
-              {pagination && pagination.total > 1 && (
-                <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
-                      Zeige {((pagination.current - 1) * pagination.limit) + 1} bis{' '}
-                      {Math.min(pagination.current * pagination.limit, pagination.count)} von{' '}
-                      {pagination.count} Leads
-                    </div>
-                    
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                        disabled={currentPage === 1}
-                        className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                      </button>
-                      
-                      <span className="px-4 py-2 text-sm font-medium text-gray-700">
-                        {pagination.current} von {pagination.total}
-                      </span>
-                      
-                      <button
-                        onClick={() => setCurrentPage(Math.min(pagination.total, currentPage + 1))}
-                        disabled={currentPage === pagination.total}
-                        className="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
             </>
           )}
         </div>

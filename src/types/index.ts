@@ -1,6 +1,4 @@
-
-
-// Leadgenerierungs-Plattform Typen für PMA-Makler
+// Leadgenerierungs-Plattform Typen für Versicherungsmakler
 
 export interface Makler {
   id: string;
@@ -9,7 +7,7 @@ export interface Makler {
   lastName: string;
   phone: string;
   companyName?: string;
-  pmaPartnerId: string;
+  partnerId: string;
   
   // Whitelabel Branding
   branding: {
@@ -188,8 +186,8 @@ export interface Lead {
   
   createdAt: Date;
   lastContactAt?: Date;
-  exportedToPMA: boolean;
-  pmaExportDate?: Date;
+  exportedToCRM: boolean;
+  crmExportDate?: Date;
 }
 
 export interface Communication {
@@ -344,7 +342,7 @@ export interface Testimonial {
 }
 
 // CSV Export Format für PMA
-export interface PMAExport {
+export interface CRMExport {
   exportId: string;
   maklerId: string;
   leads: ExportLead[];
@@ -364,4 +362,114 @@ export interface ExportLead {
   source: string;
   createdAt: Date;
   lastContactAt?: Date;
+}
+
+// Modulares System
+export interface Module {
+  id: string;
+  name: string;
+  description: string;
+  category: 'basic' | 'premium' | 'enterprise';
+  monthlyPrice: number;
+  yearlyPrice: number;
+  features: string[];
+  included?: boolean; // für Grundpaket
+  icon: string;
+  comingSoon?: boolean;
+}
+
+export interface Package {
+  id: string;
+  name: string;
+  description: string;
+  basePrice: number;
+  includedModules: string[];
+  features: string[];
+  target: string;
+}
+
+// Erweiterte Lead-Typen für modulare Features
+export interface LeadCluster {
+  id: string;
+  name: string;
+  criteria: {
+    ageRange?: [number, number];
+    income?: [number, number];
+    region?: string[];
+    interests?: string[];
+    behavior?: string[];
+  };
+  leadCount: number;
+  conversionRate: number;
+  averageValue: number;
+}
+
+export interface AutomationRule {
+  id: string;
+  name: string;
+  trigger: 'time_based' | 'action_based' | 'score_based' | 'stage_based';
+  conditions: {
+    field: string;
+    operator: 'equals' | 'greater' | 'less' | 'contains';
+    value: string | number;
+  }[];
+  actions: {
+    type: 'email' | 'sms' | 'whatsapp' | 'task' | 'stage_change' | 'tag';
+    content?: string;
+    delay?: number; // in hours
+    assignTo?: string;
+  }[];
+  isActive: boolean;
+  lastExecuted?: Date;
+  executionCount: number;
+}
+
+export interface ContractTemplate {
+  id: string;
+  name: string;
+  category: 'lebensversicherung' | 'krankenversicherung' | 'sachversicherung' | 'altersvorsorge';
+  steps: {
+    id: string;
+    title: string;
+    fields: {
+      name: string;
+      type: 'text' | 'number' | 'select' | 'date' | 'checkbox' | 'file';
+      required: boolean;
+      options?: string[];
+      validation?: string;
+    }[];
+    optional: boolean;
+  }[];
+  estimatedDuration: number; // in minutes
+  conversionRate: number;
+}
+
+export interface PrequalificationProcess {
+  id: string;
+  name: string;
+  insuranceType: string;
+  questions: {
+    id: string;
+    question: string;
+    type: 'single' | 'multiple' | 'range' | 'text';
+    options?: string[];
+    scoring: { [key: string]: number };
+    required: boolean;
+    dependsOn?: string; // other question id
+  }[];
+  scoringRules: {
+    minScore: number;
+    maxScore: number;
+    qualification: 'hoch' | 'mittel' | 'niedrig' | 'ungeeignet';
+    recommendedActions: string[];
+  }[];
+}
+
+export interface Analytics {
+  leadSources: { source: string; count: number; conversionRate: number }[];
+  conversionFunnel: { stage: string; count: number; dropOffRate: number }[];
+  campaignPerformance: { campaign: string; roi: number; cpl: number; conversions: number }[];
+  geographicDistribution: { region: string; leads: number; value: number }[];
+  timeBasedMetrics: { period: string; leads: number; conversions: number; revenue: number }[];
+  clusterAnalysis: LeadCluster[];
 } 

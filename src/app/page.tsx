@@ -1,301 +1,292 @@
+'use client';
+
 import Link from 'next/link';
-import LoginTest from '../components/LoginTest';
 import { 
-  Target, 
   Users, 
+  Target, 
+  Zap, 
   BarChart3, 
-  MessageSquare, 
-  FileDown,
-  Headphones,
-  Sparkles,
   ArrowRight,
   CheckCircle,
+  Star,
+  Shield,
+  Clock,
+  Layers,
+  TrendingUp,
+  FileText,
+  Settings,
+  Puzzle,
+  Building2,
   Globe,
-  Zap,
-  Shield
+  Award
 } from 'lucide-react';
+
+const features = [
+  {
+    icon: Users,
+    title: 'Professionelle Leaderfassung',
+    description: 'DSGVO-konforme Lead-Erfassung mit intelligenter Scoring-Funktion und automatischer Kategorisierung nach Versicherungssparten.'
+  },
+  {
+    icon: Target,
+    title: 'Multi-Channel Kampagnen',
+    description: 'Erstellen Sie Kampagnen auf Facebook, Instagram, Google und YouTube mit erweiterten Targeting-Optionen.'
+  },
+  {
+    icon: Zap,
+    title: 'Intelligente Automatisierung',
+    description: 'Automatisierte Follow-ups, E-Mail-Sequenzen und Reminder-Systeme für optimale Lead-Nurturing.'
+  },
+  {
+    icon: BarChart3,
+    title: 'Advanced Analytics',
+    description: 'Umfassende Reporting-Tools mit Predictive Analytics und ROI-Tracking über die gesamte Customer Journey.'
+  },
+  {
+    icon: Shield,
+    title: 'Compliance & Sicherheit',
+    description: 'Vollständige DSGVO-Compliance mit automatischen Audit-Protokollen und erweiterten Sicherheitsfeatures.'
+  },
+  {
+    icon: Puzzle,
+    title: 'Modularer Aufbau',
+    description: 'Starten Sie mit dem Grundpaket und erweitern Sie nach Bedarf mit Premium- und Enterprise-Modulen.'
+  }
+];
+
+const benefits = [
+  { text: 'Bis zu 300% mehr qualifizierte Leads', icon: TrendingUp },
+  { text: 'Automatisierung spart 15+ Stunden/Woche', icon: Clock },
+  { text: 'Integration zu allen gängigen CRM-Systemen', icon: Settings },
+  { text: 'White-Label Lösung verfügbar', icon: Building2 }
+];
+
+const testimonials = [
+  {
+    name: 'Michael Weber',
+    company: 'Weber Versicherungsmakler',
+            text: 'Mit InsureAI Pro haben wir unsere Lead-Qualität um 250% gesteigert. Die Automatisierung spart uns täglich mehrere Stunden.',
+    rating: 5
+  },
+  {
+    name: 'Sarah Klein',
+    company: 'FinanzProfi GmbH', 
+    text: 'Das beste Investment in unsere Digitalisierung. ROI bereits nach 2 Monaten erreicht.',
+    rating: 5
+  },
+  {
+    name: 'Thomas Schmidt',
+    company: 'Schmidt & Partner',
+    text: 'Endlich eine Lösung, die speziell für Versicherungsmakler entwickelt wurde. Perfekte PMA-Integration.',
+    rating: 5
+  }
+];
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl">
-                <Sparkles className="h-12 w-12 text-white" />
-              </div>
+      <section className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 pt-20 pb-24">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <div className="inline-flex items-center space-x-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium mb-8">
+            <Award className="w-4 h-4" />
+            <span>Deutschlands führende Leadgenerierungs-Plattform für Makler</span>
+          </div>
+          
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+            Mehr Leads.<br />
+            Bessere Conversion.<br />
+            <span className="text-blue-600">Modulare Flexibilität.</span>
+          </h1>
+          
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+            InsureAI Pro ist die modulare Leadgenerierungs-Plattform speziell für Versicherungsmakler. 
+            Digitalisieren Sie Ihre Kundenakquise mit intelligenten Tools und automatisierten Prozessen.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <Link 
+              href="/demo" 
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all transform hover:scale-105 shadow-lg"
+            >
+              Live Demo starten <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link 
+              href="/modules" 
+              className="border-2 border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-4 rounded-lg font-semibold transition-all"
+            >
+              Module entdecken
+            </Link>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-gray-500">
+            <div>
+              <div className="text-2xl font-bold text-gray-900">2.500+</div>
+              <div className="text-sm">Zufriedene Makler</div>
             </div>
-            
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              Ihre <span className="text-blue-300">Whitelabel-Plattform</span><br />
-              für Leadgenerierung
-            </h1>
-            
-            <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
-              Jeder PMA-Makler erhält seine eigene Instanz zur Leadgenerierung und -verarbeitung.
-              Von der Kampagne bis zur Übergabe an PMA - alles an einem Ort.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/onboarding" className="btn-primary text-lg px-8 py-4">
-                Jetzt Partner werden
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-              <Link href="/demo" className="btn-secondary text-lg px-8 py-4">
-                Live-Demo ansehen
-              </Link>
+            <div>
+              <div className="text-2xl font-bold text-gray-900">1.2M+</div>
+              <div className="text-sm">Generierte Leads</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-gray-900">98%</div>
+              <div className="text-sm">Kundenzufriedenheit</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-gray-900">DSGVO</div>
+              <div className="text-sm">100% Konform</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 7-Schritte Prozess */}
-      <section className="py-20 bg-gradient-to-b from-slate-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Features Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              In 7 Schritten zum Erfolg
+              Alles was Sie für erfolgreiche Leadgenerierung brauchen
             </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Von der ersten Kampagne bis zur Übergabe qualifizierter Leads an PMA
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Von der Lead-Erfassung bis zum Abschluss - unsere Plattform deckt alle Schritte 
+              Ihrer Kundenakquise ab.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Schritt 1: Onboarding */}
-            <div className="glass-card p-6 animate-slide-up">
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-3 rounded-lg w-fit mb-4">
-                <Users className="h-6 w-6 text-white" />
+            {features.map((feature, index) => (
+              <div key={index} className="bg-white rounded-lg p-8 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                <div className="bg-blue-50 p-3 rounded-lg w-fit mb-6">
+                  <feature.icon className="w-6 h-6 text-blue-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
               </div>
-              <h3 className="text-xl font-semibold mb-3">1. Onboarding & Branding</h3>
-              <p className="text-gray-600 mb-4">
-                Erhalten Sie Zugang zu Ihrer individuellen Plattform mit persönlichem Branding,
-                Logo und Farben.
-              </p>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Schulungsvideos</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Persönliches Branding</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Funktionseinführung</li>
-              </ul>
-            </div>
-
-            {/* Schritt 2: Kampagnenerstellung */}
-            <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-              <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-3 rounded-lg w-fit mb-4">
-                <Target className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">2. Kampagnenerstellung</h3>
-              <p className="text-gray-600 mb-4">
-                Erstellen Sie Kampagnen für Facebook, Instagram, Google und YouTube mit 
-                kuratierten Vorlagen.
-              </p>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Multi-Platform Support</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Fertige Vorlagen</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Step-by-Step Anleitung</li>
-              </ul>
-            </div>
-
-            {/* Schritt 3: Landingpage */}
-            <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              <div className="bg-gradient-to-r from-green-500 to-green-600 p-3 rounded-lg w-fit mb-4">
-                <Globe className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">3. DSGVO-konforme Landingpage</h3>
-              <p className="text-gray-600 mb-4">
-                Automatisch generierte Landingpages mit Double-Opt-In und 
-                individuellem Makler-Branding.
-              </p>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />DSGVO-konform</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Double-Opt-In</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Individuell anpassbar</li>
-              </ul>
-            </div>
-
-            {/* Schritt 4: Automatisierte Kommunikation */}
-            <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-              <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-3 rounded-lg w-fit mb-4">
-                <MessageSquare className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">4. Automatisierte Lead-Kommunikation</h3>
-              <p className="text-gray-600 mb-4">
-                Sofortige Erstansprache per E-Mail, WhatsApp oder SMS mit 
-                KI-gestützten Textvorschlägen.
-              </p>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Multi-Channel</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />KI-Textvorschläge</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Auto Follow-ups</li>
-              </ul>
-            </div>
-
-            {/* Schritt 5: Lead-Qualifizierung */}
-            <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '0.4s' }}>
-              <div className="bg-gradient-to-r from-red-500 to-red-600 p-3 rounded-lg w-fit mb-4">
-                <BarChart3 className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">5. Lead-Qualifizierung & Pipeline</h3>
-              <p className="text-gray-600 mb-4">
-                Visuelle Pipeline-Darstellung von Neu bis Heiß mit automatischer 
-                Bewertung und Kategorisierung.
-              </p>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Visuelle Pipeline</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Auto-Bewertung</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Kategorisierung</li>
-              </ul>
-            </div>
-
-            {/* Schritt 6: PMA Export */}
-            <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '0.5s' }}>
-              <div className="bg-gradient-to-r from-teal-500 to-teal-600 p-3 rounded-lg w-fit mb-4">
-                <FileDown className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">6. Übergabe an PMA</h3>
-              <p className="text-gray-600 mb-4">
-                Standardisierter CSV-Export qualifizierter Leads - automatisch 
-                oder manuell auf Knopfdruck.
-              </p>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Standardisiertes Format</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Auto/Manuell Export</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />CRM-Integration</li>
-              </ul>
-            </div>
-
-            {/* Schritt 7: Support */}
-            <div className="glass-card p-6 animate-slide-up" style={{ animationDelay: '0.6s' }}>
-              <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 p-3 rounded-lg w-fit mb-4">
-                <Headphones className="h-6 w-6 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">7. Betreuung & Support</h3>
-              <p className="text-gray-600 mb-4">
-                Umfassender Support gemäß SLA-Paket mit Hotline, Workshops 
-                und Vorlagenoptimierung.
-              </p>
-              <ul className="space-y-2 text-sm text-gray-500">
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Basic bis Enterprise</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Hotline-Support</li>
-                <li className="flex items-center"><CheckCircle className="h-4 w-4 mr-2 text-green-500" />Team-Workshops</li>
-              </ul>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Vorteile Section */}
+      {/* Benefits Section */}
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                Vorteile für PMA-Berater
+                Nachweisbare Ergebnisse für Ihr Maklerunternehmen
               </h2>
+              <p className="text-xl text-gray-600 mb-8">
+                Unsere Kunden berichten von signifikanten Verbesserungen in allen 
+                wichtigen KPIs bereits in den ersten Wochen.
+              </p>
+              
               <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <Zap className="h-6 w-6 text-primary-600 mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Selbstbestimmtes Arbeiten</h3>
-                    <p className="text-gray-600">Mit eigenem Branding und individueller Anpassung</p>
+                {benefits.map((benefit, index) => (
+                  <div key={index} className="flex items-center space-x-4">
+                    <div className="bg-green-50 p-2 rounded-lg">
+                      <benefit.icon className="w-5 h-5 text-green-600" />
+                    </div>
+                    <span className="text-gray-800 font-medium">{benefit.text}</span>
                   </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <Shield className="h-6 w-6 text-primary-600 mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Kein technisches Know-how nötig</h3>
-                    <p className="text-gray-600">Schritt-für-Schritt Anleitungen für alle Funktionen</p>
+                ))}
+              </div>
+              
+              <Link 
+                href="/dashboard" 
+                className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-semibold mt-8"
+              >
+                <span>Dashboard ansehen</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8">
+              <div className="text-center">
+                <div className="text-4xl font-bold text-blue-600 mb-2">ROI</div>
+                <div className="text-2xl font-bold text-gray-900 mb-4">350%</div>
+                <p className="text-gray-600 mb-6">
+                  Durchschnittliche Investitionsrendite unserer Kunden im ersten Jahr
+                </p>
+                
+                <div className="grid grid-cols-2 gap-4 text-center">
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="text-2xl font-bold text-gray-900">-67%</div>
+                    <div className="text-sm text-gray-600">Cost per Lead</div>
                   </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <Target className="h-6 w-6 text-primary-600 mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Alles an einem Ort</h3>
-                    <p className="text-gray-600">Werbung, Landingpage, Leadmanagement & Übergabe</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <BarChart3 className="h-6 w-6 text-primary-600 mt-1" />
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Strukturierte Workflows</h3>
-                    <p className="text-gray-600">Sorgen für maximale Effizienz und bessere Ergebnisse</p>
+                  <div className="bg-white rounded-lg p-4">
+                    <div className="text-2xl font-bold text-gray-900">+280%</div>
+                    <div className="text-sm text-gray-600">Lead Quality</div>
                   </div>
                 </div>
               </div>
             </div>
-            
-            <div className="glass-card p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Bereit loszulegen?</h3>
-              <p className="text-gray-600 mb-6">
-                Werden Sie Teil der PMA-Leadgenerierungs-Plattform und starten Sie noch heute 
-                mit der professionellen Akquise neuer Kunden.
-              </p>
-              <Link href="/onboarding" className="btn-primary w-full text-center">
-                Jetzt kostenlos starten
-              </Link>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* Multi-Tenant Login Test */}
+      {/* Testimonials */}
       <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-4">
-            Multi-Tenant System Test
-          </h2>
-          <p className="text-center text-gray-600 mb-12">
-            Testen Sie die verschiedenen Benutzerrollen und Tenant-Instanzen:
-          </p>
-          <LoginTest />
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Was unsere Kunden sagen
+            </h2>
+            <p className="text-xl text-gray-600">
+              Über 2.500 Versicherungsmakler vertrauen bereits auf InsureAI Pro
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="bg-white rounded-lg p-8 shadow-sm border border-gray-200">
+                <div className="flex items-center space-x-1 mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-6 italic">"{testimonial.text}"</p>
+                <div>
+                  <div className="font-semibold text-gray-900">{testimonial.name}</div>
+                  <div className="text-sm text-gray-500">{testimonial.company}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold mb-4">PMA Leadgenerierung</h3>
-              <p className="text-gray-400">
-                Ihre Whitelabel-Plattform für professionelle Leadgenerierung 
-                und -verarbeitung.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Plattform</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/features" className="hover:text-white transition-colors">Features</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Preise</Link></li>
-                <li><Link href="/demo" className="hover:text-white transition-colors">Demo</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/help" className="hover:text-white transition-colors">Hilfe</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Kontakt</Link></li>
-                <li><Link href="/training" className="hover:text-white transition-colors">Schulungen</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Unternehmen</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/about" className="hover:text-white transition-colors">Über uns</Link></li>
-                <li><Link href="/privacy" className="hover:text-white transition-colors">Datenschutz</Link></li>
-                <li><Link href="/terms" className="hover:text-white transition-colors">AGB</Link></li>
-              </ul>
-            </div>
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            Bereit für mehr qualifizierte Leads?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8">
+            Starten Sie noch heute mit InsureAI Pro und transformieren Sie Ihre Kundenakquise. 
+            Kostenlose Testphase - keine Verpflichtungen.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link 
+              href="/demo" 
+              className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-all inline-flex items-center justify-center gap-2"
+            >
+              Kostenlos testen <ArrowRight className="w-5 h-5" />
+            </Link>
+            <Link 
+              href="/modules" 
+              className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/10 transition-all"
+            >
+              Module ansehen
+            </Link>
           </div>
           
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 PMA Leadgenerierungs-Plattform. Alle Rechte vorbehalten.</p>
-          </div>
+          <p className="text-blue-200 text-sm mt-6">
+            ✓ 14 Tage kostenlos ✓ Keine Einrichtungsgebühren ✓ DSGVO-konform
+          </p>
         </div>
-      </footer>
+      </section>
     </div>
   );
 } 

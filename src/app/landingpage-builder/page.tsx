@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
 import { 
   Eye, 
   Smartphone, 
@@ -90,10 +89,6 @@ interface LandingPagesData {
 }
 
 export default function LandingPageBuilder() {
-  const { user, isAuthenticated } = useAuth();
-  const [landingPagesData, setLandingPagesData] = useState<LandingPagesData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<'list' | 'builder'>('list');
   const [selectedTemplate, setSelectedTemplate] = useState('altersvorsorge');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -104,6 +99,214 @@ export default function LandingPageBuilder() {
   const [builderMode, setBuilderMode] = useState<'desktop' | 'mobile'>('desktop');
   const [activeSection, setActiveSection] = useState('content');
   const [isCreating, setIsCreating] = useState(false);
+
+  // Demo Landing Pages Data
+  const demoLandingPagesData: LandingPagesData = {
+    landingPages: [
+      {
+        id: 'lp-001',
+        name: 'Altersvorsorge 2024',
+        slug: 'altersvorsorge-2024',
+        template: 'altersvorsorge',
+        status: 'published',
+        headline: 'Sichern Sie Ihre Zukunft mit der optimalen Altersvorsorge',
+        subheadline: 'Kostenlose Beratung und individuelle Lösungen für Ihre finanzielle Sicherheit im Alter',
+        content: {},
+        formFields: [],
+        metaTitle: 'Altersvorsorge 2024 - Kostenlose Beratung',
+        metaDescription: 'Optimale Altersvorsorge mit individueller Beratung',
+        views: 2847,
+        submissions: 312,
+        conversionRate: 10.9,
+        createdAt: '15.11.2024',
+        updatedAt: '22.12.2024',
+        publishedAt: '16.11.2024',
+        campaign: {
+          id: 'camp-001',
+          name: 'Facebook Altersvorsorge Q4',
+          platform: 'Facebook'
+        },
+        makler: {
+          name: 'Thomas Müller',
+          company: 'Müller Finanzberatung',
+          branding: {
+            primaryColor: '#2563eb',
+            secondaryColor: '#1e40af'
+          }
+        }
+      },
+      {
+        id: 'lp-002',
+        name: 'Traumhaus Finanzierung',
+        slug: 'traumhaus-finanzierung',
+        template: 'baufinanzierung',
+        status: 'published',
+        headline: 'Verwirklichen Sie Ihren Traum vom Eigenheim',
+        subheadline: 'Günstige Konditionen und persönliche Beratung für Ihre Baufinanzierung',
+        content: {},
+        formFields: [],
+        metaTitle: 'Baufinanzierung - Günstige Zinsen',
+        metaDescription: 'Traumhaus finanzieren mit besten Konditionen',
+        views: 1926,
+        submissions: 298,
+        conversionRate: 15.5,
+        createdAt: '08.11.2024',
+        updatedAt: '20.12.2024',
+        publishedAt: '09.11.2024',
+        campaign: {
+          id: 'camp-002',
+          name: 'Google Ads Baufinanzierung',
+          platform: 'Google'
+        },
+        makler: {
+          name: 'Thomas Müller',
+          company: 'Müller Finanzberatung',
+          branding: {
+            primaryColor: '#2563eb',
+            secondaryColor: '#1e40af'
+          }
+        }
+      },
+      {
+        id: 'lp-003',
+        name: 'PKV Wechsel Guide',
+        slug: 'pkv-wechsel-guide',
+        template: 'krankenversicherung',
+        status: 'published',
+        headline: 'Die beste Krankenversicherung für Ihre Bedürfnisse',
+        subheadline: 'Umfassender Schutz und optimale Leistungen zu fairen Preisen',
+        content: {},
+        formFields: [],
+        metaTitle: 'Private Krankenversicherung - Wechsel',
+        metaDescription: 'PKV Wechsel leicht gemacht - Experten Beratung',
+        views: 1453,
+        submissions: 127,
+        conversionRate: 8.7,
+        createdAt: '02.12.2024',
+        updatedAt: '18.12.2024',
+        publishedAt: '03.12.2024',
+        campaign: {
+          id: 'camp-005',
+          name: 'LinkedIn PKV Kampagne',
+          platform: 'LinkedIn'
+        },
+        makler: {
+          name: 'Thomas Müller',
+          company: 'Müller Finanzberatung',
+          branding: {
+            primaryColor: '#2563eb',
+            secondaryColor: '#1e40af'
+          }
+        }
+      },
+      {
+        id: 'lp-004',
+        name: 'Berufsunfähigkeit Premium',
+        slug: 'berufsunfaehigkeit-premium',
+        template: 'altersvorsorge',
+        status: 'draft',
+        headline: 'Schützen Sie Ihr Einkommen bei Berufsunfähigkeit',
+        subheadline: 'Umfassender Schutz für Ihre finanzielle Sicherheit',
+        content: {},
+        formFields: [],
+        metaTitle: 'Berufsunfähigkeitsversicherung Premium',
+        metaDescription: 'BU Schutz mit besten Leistungen',
+        views: 0,
+        submissions: 0,
+        conversionRate: 0,
+        createdAt: '20.12.2024',
+        updatedAt: '22.12.2024',
+        makler: {
+          name: 'Thomas Müller',
+          company: 'Müller Finanzberatung',
+          branding: {
+            primaryColor: '#2563eb',
+            secondaryColor: '#1e40af'
+          }
+        }
+      },
+      {
+        id: 'lp-005',
+        name: 'Kfz Versicherung 2025',
+        slug: 'kfz-versicherung-2025',
+        template: 'baufinanzierung',
+        status: 'published',
+        headline: 'Sparen Sie bis zu 850€ bei der Kfz-Versicherung',
+        subheadline: 'Kostenloser Vergleich und sofortiger Wechsel möglich',
+        content: {},
+        formFields: [],
+        metaTitle: 'Kfz Versicherung 2025 - Bis zu 850€ sparen',
+        metaDescription: 'Günstige Autoversicherung finden und wechseln',
+        views: 3124,
+        submissions: 478,
+        conversionRate: 15.3,
+        createdAt: '01.12.2024',
+        updatedAt: '21.12.2024',
+        publishedAt: '02.12.2024',
+        campaign: {
+          id: 'camp-007',
+          name: 'Instagram Kfz Stories',
+          platform: 'Instagram'
+        },
+        makler: {
+          name: 'Thomas Müller',
+          company: 'Müller Finanzberatung',
+          branding: {
+            primaryColor: '#2563eb',
+            secondaryColor: '#1e40af'
+          }
+        }
+      },
+      {
+        id: 'lp-006',
+        name: 'Risikolebensversicherung Familie',
+        slug: 'risikolebensversicherung-familie',
+        template: 'krankenversicherung',
+        status: 'archived',
+        headline: 'Schutz für Ihre Familie im Ernstfall',
+        subheadline: 'Günstige Risikolebensversicherung für finanzielle Absicherung',
+        content: {},
+        formFields: [],
+        metaTitle: 'Risikolebensversicherung für Familien',
+        metaDescription: 'Finanzielle Absicherung der Familie',
+        views: 892,
+        submissions: 45,
+        conversionRate: 5.0,
+        createdAt: '15.10.2024',
+        updatedAt: '30.11.2024',
+        publishedAt: '16.10.2024',
+        makler: {
+          name: 'Thomas Müller',
+          company: 'Müller Finanzberatung',
+          branding: {
+            primaryColor: '#2563eb',
+            secondaryColor: '#1e40af'
+          }
+        }
+      }
+    ],
+    stats: {
+      total: 6,
+      published: 4,
+      draft: 1,
+      archived: 1,
+      totalViews: 10242,
+      totalSubmissions: 1260,
+      avgConversionRate: 12.3
+    },
+    pagination: {
+      total: 6,
+      limit: 20,
+      offset: 0,
+      hasMore: false
+    },
+    user: {
+      name: 'Thomas Müller',
+      email: 'thomas.mueller@finanzberatung-demo.de',
+      tenant: 'Müller Finanzberatung',
+      role: 'Admin'
+    }
+  };
 
   // Templates configuration
   const templates = [
@@ -163,136 +366,24 @@ export default function LandingPageBuilder() {
     }
   ];
 
-  // Fetch landing pages data from API
-  const fetchLandingPagesData = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  // Use demo data directly
+  const landingPagesData = demoLandingPagesData;
 
-      const params = new URLSearchParams();
-      if (filterStatus !== 'all') params.append('status', filterStatus);
-      if (filterTemplate !== 'all') params.append('template', filterTemplate);
-      
-      const response = await fetch(`/api/landingpages?${params.toString()}`);
-      
-      if (!response.ok) {
-        if (response.status === 401) {
-          setError('Nicht authentifiziert. Bitte melden Sie sich an.');
-          return;
-        }
-        throw new Error('Fehler beim Laden der Landing Page Daten');
-      }
-
-      const data = await response.json();
-      setLandingPagesData(data);
-    } catch (err) {
-      console.error('Landing Pages fetch error:', err);
-      setError(err instanceof Error ? err.message : 'Unbekannter Fehler');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Effect to fetch data on component mount and filter changes
-  useEffect(() => {
-    if (isAuthenticated && view === 'list') {
-      fetchLandingPagesData();
-    }
-  }, [isAuthenticated, filterStatus, filterTemplate, view]);
-
-  // Create new landing page
-  const createLandingPage = async (templateId: string) => {
+  // Demo function for creating landing pages
+  const createLandingPage = (templateId: string) => {
     const template = templates.find(t => t.id === templateId);
     if (!template) return;
 
     setIsCreating(true);
-    try {
-      const slug = `${templateId}-${Date.now()}`;
-      const response = await fetch('/api/landingpages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: `${template.name} Landing Page`,
-          slug,
-          template: templateId,
-          headline: template.defaultContent.headline,
-          subheadline: template.defaultContent.subheadline,
-          content: template.defaultContent,
-          formFields: [
-            { id: '1', type: 'text', label: 'Vorname', required: true },
-            { id: '2', type: 'text', label: 'Nachname', required: true },
-            { id: '3', type: 'email', label: 'E-Mail-Adresse', required: true },
-            { id: '4', type: 'phone', label: 'Telefonnummer', required: false },
-          ]
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Fehler beim Erstellen der Landing Page');
-      }
-
-      // Refresh data and show success
-      await fetchLandingPagesData();
-      setView('list');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Fehler beim Erstellen');
-    } finally {
+    
+    // Simulate creation delay
+    setTimeout(() => {
       setIsCreating(false);
-    }
+      setView('list');
+      // In real implementation, this would add to the list
+      alert(`Demo: ${template.name} Landing Page würde erstellt werden!`);
+    }, 1000);
   };
-
-  // Redirect to login if not authenticated
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Anmeldung erforderlich</h1>
-          <p className="text-gray-600 mb-6">Sie müssen sich anmelden, um Landing Pages zu erstellen.</p>
-          <button 
-            onClick={() => window.location.href = '/'}
-            className="btn-primary"
-          >
-            Zur Anmeldung
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Loading state
-  if (loading && view === 'list') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary-600" />
-          <p className="text-gray-600">Landing Pages werden geladen...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error && view === 'list') {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
-        <div className="text-center">
-          <AlertCircle className="h-8 w-8 mx-auto mb-4 text-red-500" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Fehler</h1>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <button 
-            onClick={fetchLandingPagesData}
-            className="btn-primary flex items-center mx-auto"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Erneut versuchen
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   // Template selection view
   if (view === 'builder') {
