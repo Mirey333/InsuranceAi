@@ -61,6 +61,11 @@ export default function DemoNavigation() {
       name: 'Export',
       href: '/export',
       icon: FileDown,
+    },
+    {
+      name: 'Analytics',
+      href: '/analytics',
+      icon: BarChart3,
     }
   ];
 
