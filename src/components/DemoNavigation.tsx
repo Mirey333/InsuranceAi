@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { 
   Building2, 
@@ -76,7 +77,14 @@ export default function DemoNavigation() {
           
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
-            <img src="/logo-icon.svg" alt="InsureAI Pro" className="w-8 h-8" />
+            <Image 
+              src="/logo-icon.svg" 
+              alt="InsureAI Pro" 
+              width={32} 
+              height={32}
+              className="w-8 h-8"
+              priority
+            />
             <span className="text-xl font-semibold text-gray-900">
               InsureAI Pro
             </span>
