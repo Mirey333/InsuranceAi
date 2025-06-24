@@ -1573,50 +1573,152 @@ export default function DemoPage() {
 
          {activeTab === 'analytics' && (
           <div className="space-y-6">
-            <div className="text-center py-12">
-              <PieChart className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Analytics Pro</h2>
-              <p className="text-gray-600 mb-8">Erweiterte Analyse-Features verfügbar im Premium-Plan</p>
-              
-              <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-sm p-8">
-                <div className="space-y-6">
-                  <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-6 rounded-lg">
-                    <h3 className="font-semibold text-lg mb-4">📊 Analytics Features</h3>
-                    <div className="grid md:grid-cols-2 gap-4 text-sm">
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-600" />
-                          <span>Predictive Analytics</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-600" />
-                          <span>Conversion Funnel Analysis</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-600" />
-                          <span>ROI Tracking</span>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-600" />
-                          <span>Custom Dashboards</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-600" />
-                          <span>Automated Reports</span>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-600" />
-                          <span>Performance Insights</span>
-                        </div>
-                      </div>
-                    </div>
+            {/* Live Analytics Dashboard */}
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">📊 Live Analytics Dashboard</h2>
+              <p className="text-gray-600">Echte Performance-Daten deines Insurance-Funnels</p>
+            </div>
+
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Live Besucher</p>
+                    <p className="text-3xl font-bold text-green-600">47</p>
+                    <p className="text-sm text-green-500 flex items-center mt-1">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                      Jetzt aktiv
+                    </p>
                   </div>
-                  
-                  <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all">
-                    Analytics Pro aktivieren
-                  </button>
+                  <Users className="h-12 w-12 text-green-500" />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Leads (7 Tage)</p>
+                    <p className="text-3xl font-bold text-blue-600">234</p>
+                    <p className="text-sm text-green-500 flex items-center mt-1">
+                      <TrendingUp className="h-4 w-4 mr-1" />
+                      +23.4% vs. Vorwoche
+                    </p>
+                  </div>
+                  <Target className="h-12 w-12 text-blue-500" />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Umsatz (7 Tage)</p>
+                    <p className="text-3xl font-bold text-purple-600">€87.400</p>
+                    <p className="text-sm text-green-500 flex items-center mt-1">
+                      <TrendingUp className="h-4 w-4 mr-1" />
+                      +18.7% vs. Vorwoche
+                    </p>
+                  </div>
+                  <Euro className="h-12 w-12 text-purple-500" />
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Conversion Rate</p>
+                    <p className="text-3xl font-bold text-orange-600">12.3%</p>
+                    <p className="text-sm text-green-500 flex items-center mt-1">
+                      <Award className="h-4 w-4 mr-1" />
+                      Über Branchenschnitt
+                    </p>
+                  </div>
+                  <Award className="h-12 w-12 text-orange-500" />
+                </div>
+              </div>
+            </div>
+
+            {/* Top Kampagnen Performance */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-900 mb-6">🏆 Top-Kampagnen Performance</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">Kampagne</th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-700">Leads</th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-700">Conversion</th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-700">Umsatz</th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-700">Performance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b hover:bg-gray-50">
+                      <td className="py-4 px-4 font-medium">Lebensversicherung Premium</td>
+                      <td className="py-4 px-4 text-center">
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">156</span>
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        <span className="text-green-600 font-semibold">34.2%</span>
+                      </td>
+                      <td className="py-4 px-4 text-center font-semibold">€89.400</td>
+                      <td className="py-4 px-4 text-center">
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full" style={{width: '34%'}}></div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="border-b hover:bg-gray-50">
+                      <td className="py-4 px-4 font-medium">KFZ-Versicherung Digital</td>
+                      <td className="py-4 px-4 text-center">
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">143</span>
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        <span className="text-green-600 font-semibold">28.7%</span>
+                      </td>
+                      <td className="py-4 px-4 text-center font-semibold">€67.200</td>
+                      <td className="py-4 px-4 text-center">
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full" style={{width: '29%'}}></div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="border-b hover:bg-gray-50">
+                      <td className="py-4 px-4 font-medium">Berufsunfähigkeit Comfort</td>
+                      <td className="py-4 px-4 text-center">
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">87</span>
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        <span className="text-green-600 font-semibold">52.1%</span>
+                      </td>
+                      <td className="py-4 px-4 text-center font-semibold">€78.300</td>
+                      <td className="py-4 px-4 text-center">
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full" style={{width: '52%'}}></div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Live Demo Hinweis */}
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">🚀 Vollständiges Analytics Dashboard</h3>
+                  <p className="text-blue-100">Interaktive Charts, Echtzeit-Updates und erweiterte KI-Insights verfügbar in der Hauptnavigation</p>
+                </div>
+                <div className="ml-6">
+                  <a 
+                    href="/analytics" 
+                    target="_blank"
+                    className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors inline-flex items-center space-x-2"
+                  >
+                    <BarChart3 className="w-5 h-5" />
+                    <span>Analytics öffnen</span>
+                  </a>
                 </div>
               </div>
             </div>
