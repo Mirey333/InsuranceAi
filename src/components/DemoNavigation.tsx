@@ -13,7 +13,8 @@ import {
   Layers,
   Puzzle,
   Menu,
-  X
+  X,
+  Headphones
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -41,6 +42,11 @@ export default function DemoNavigation() {
       name: 'Dashboard',
       href: '/dashboard',
       icon: BarChart3,
+    },
+    {
+      name: 'AI Call Center',
+      href: '/call-center',
+      icon: Headphones,
     },
     {
       name: 'Kampagnen',

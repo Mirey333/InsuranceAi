@@ -472,4 +472,108 @@ export interface Analytics {
   geographicDistribution: { region: string; leads: number; value: number }[];
   timeBasedMetrics: { period: string; leads: number; conversions: number; revenue: number }[];
   clusterAnalysis: LeadCluster[];
+}
+
+// AI Call Center Types
+export interface CallCenterAgent {
+  id: string;
+  name: string;
+  status: 'available' | 'busy' | 'offline';
+  type: 'ai' | 'human';
+  specializations: string[];
+  currentCalls: number;
+  maxConcurrentCalls: number;
+  avgCallDuration: number;
+  totalCallsToday: number;
+  successRate: number;
+}
+
+export interface Call {
+  id: string;
+  leadId?: string;
+  customerPhone: string;
+  customerName?: string;
+  agentId: string;
+  type: 'inbound' | 'outbound';
+  status: 'ringing' | 'active' | 'hold' | 'completed' | 'missed' | 'failed';
+  category: 'support' | 'sales' | 'followup' | 'appointment';
+  startTime: Date;
+  endTime?: Date;
+  duration?: number; // in seconds
+  transcript?: string;
+  summary?: string;
+  sentiment?: 'positive' | 'neutral' | 'negative';
+  outcome?: 'lead_qualified' | 'appointment_scheduled' | 'callback_requested' | 'not_interested' | 'resolved';
+  followUpRequired: boolean;
+  followUpDate?: Date;
+  notes?: string;
+  recording?: string;
+}
+
+export interface CallQueue {
+  id: string;
+  name: string;
+  type: 'general' | 'priority' | 'vip';
+  waitingCalls: Call[];
+  averageWaitTime: number;
+  maxWaitTime: number;
+  abandonmentRate: number;
+}
+
+export interface CallScript {
+  id: string;
+  name: string;
+  category: string;
+  type: 'greeting' | 'qualification' | 'objection_handling' | 'closing';
+  content: string;
+  variables: string[];
+  useCase: string;
+  isActive: boolean;
+}
+
+export interface VoiceAnalytics {
+  callId: string;
+  speakingRatio: number; // agent vs customer
+  silencePercentage: number;
+  interruptionCount: number;
+  keywordMatches: string[];
+  emotionAnalysis: {
+    timestamp: number;
+    emotion: 'happy' | 'neutral' | 'frustrated' | 'angry' | 'excited';
+    confidence: number;
+  }[];
+  talkSpeed: number; // words per minute
+  volume: number;
+}
+
+export interface CallCenterMetrics {
+  date: Date;
+  totalCalls: number;
+  answeredCalls: number;
+  missedCalls: number;
+  averageWaitTime: number;
+  averageCallDuration: number;
+  firstCallResolution: number;
+  customerSatisfaction: number;
+  leadsGenerated: number;
+  appointmentsScheduled: number;
+  conversionRate: number;
+  aiVsHumanPerformance: {
+    ai: { calls: number; satisfaction: number; resolution: number };
+    human: { calls: number; satisfaction: number; resolution: number };
+  };
+}
+
+export interface AISettings {
+  id: string;
+  name: string;
+  voice: 'male' | 'female';
+  language: 'de' | 'en';
+  personality: 'professional' | 'friendly' | 'enthusiastic' | 'empathetic';
+  responseSpeed: 'fast' | 'normal' | 'thoughtful';
+  maxCallDuration: number;
+  transferThreshold: number; // when to transfer to human
+  knowledgeBase: string[];
+  customInstructions?: string;
+  isActive: boolean;
 } 
