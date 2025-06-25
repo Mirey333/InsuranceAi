@@ -14,7 +14,8 @@ import {
   Puzzle,
   Menu,
   X,
-  Headphones
+  Headphones,
+  Share2
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -47,6 +48,11 @@ export default function DemoNavigation() {
       name: 'AI Call Center',
       href: '/call-center',
       icon: Headphones,
+    },
+    {
+      name: 'Social Media AI',
+      href: '/social-media',
+      icon: Share2,
     },
     {
       name: 'Kampagnen',

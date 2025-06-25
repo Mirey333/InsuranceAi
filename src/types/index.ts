@@ -576,4 +576,455 @@ export interface AISettings {
   knowledgeBase: string[];
   customInstructions?: string;
   isActive: boolean;
+}
+
+// ===== SOCIAL MEDIA MANAGEMENT =====
+
+export interface SocialMediaPost {
+  id: string;
+  maklerId: string;
+  title: string;
+  content: string;
+  contentType: 'text' | 'image' | 'video' | 'carousel' | 'reel' | 'story';
+  
+  // AI-Generated Content
+  aiGenerated: boolean;
+  aiPrompt?: string;
+  tone: 'professional' | 'casual' | 'educational' | 'promotional' | 'inspirational';
+  target: 'b2b' | 'b2c' | 'young_professionals' | 'families' | 'seniors';
+  
+  // Platform-specific content
+  platforms: {
+    platform: 'facebook' | 'instagram' | 'linkedin' | 'tiktok' | 'youtube' | 'twitter';
+    customContent?: string;
+    hashtags: string[];
+    mentions: string[];
+    scheduledFor: Date;
+    posted: boolean;
+    postUrl?: string;
+    performance?: SocialMediaPerformance;
+  }[];
+  
+  // Media assets
+  media: {
+    type: 'image' | 'video' | 'carousel';
+    url: string;
+    alt?: string;
+    thumbnail?: string;
+  }[];
+  
+  // Insurance-specific
+  category: 'altersvorsorge' | 'krankenversicherung' | 'lebensversicherung' | 'sachversicherung' | 'beratung' | 'tipps';
+  complianceApproved: boolean;
+  legalDisclaimer?: string;
+  
+  // Status & Planning
+  status: 'draft' | 'scheduled' | 'published' | 'failed' | 'archived';
+  createdAt: Date;
+  publishedAt?: Date;
+  
+  // Campaign Integration
+  campaignId?: string;
+  leadMagnet?: {
+    type: 'whitepaper' | 'calculator' | 'checklist' | 'webinar';
+    title: string;
+    landingPageUrl: string;
+  };
+}
+
+export interface SocialMediaPerformance {
+  platform: string;
+  postId: string;
+  
+  // Engagement metrics
+  views: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  saves: number;
+  clickthroughs: number;
+  
+  // Lead metrics
+  leadClicks: number;
+  conversions: number;
+  conversionRate: number;
+  
+  // Reach & Impressions
+  reach: number;
+  impressions: number;
+  
+  // Time-based
+  publishedAt: Date;
+  lastUpdated: Date;
+  
+  // Audience insights
+  demographics: {
+    ageGroups: { range: string; percentage: number }[];
+    gender: { male: number; female: number };
+    locations: { city: string; percentage: number }[];
+  };
+}
+
+export interface SocialMediaCalendar {
+  id: string;
+  maklerId: string;
+  month: number;
+  year: number;
+  
+  // Calendar structure
+  days: {
+    date: Date;
+    posts: SocialMediaPost[];
+    events: {
+      type: 'campaign_start' | 'campaign_end' | 'compliance_review' | 'content_planning';
+      title: string;
+      description?: string;
+    }[];
+  }[];
+  
+  // Planning goals
+  monthlyGoals: {
+    totalPosts: number;
+    platformDistribution: { platform: string; posts: number }[];
+    contentTypes: { type: string; count: number }[];
+    expectedReach: number;
+    leadTarget: number;
+  };
+  
+  // Templates & Planning
+  recurringPosts: {
+    frequency: 'daily' | 'weekly' | 'monthly';
+    template: string;
+    platforms: string[];
+    lastPosted?: Date;
+  }[];
+}
+
+export interface SocialMediaTemplate {
+  id: string;
+  name: string;
+  category: string;
+  
+  // Template content
+  content: {
+    headline: string;
+    body: string;
+    callToAction: string;
+    hashtags: string[];
+    variables: string[]; // e.g., {{customerName}}, {{productName}}
+  };
+  
+  // Platform customization
+  platformVersions: {
+    platform: string;
+    maxLength: number;
+    customContent?: string;
+    requiredHashtags: string[];
+  }[];
+  
+  // Insurance compliance
+  requiresApproval: boolean;
+  complianceNotes?: string;
+  legalText?: string;
+  
+  // Usage statistics
+  usageCount: number;
+  averagePerformance: {
+    engagement: number;
+    reach: number;
+    conversions: number;
+  };
+  
+  isActive: boolean;
+  createdAt: Date;
+}
+
+export interface SocialMediaCampaign {
+  id: string;
+  maklerId: string;
+  name: string;
+  description: string;
+  
+  // Campaign strategy
+  objective: 'brand_awareness' | 'lead_generation' | 'engagement' | 'traffic' | 'conversions';
+  target: {
+    demographics: {
+      ageMin: number;
+      ageMax: number;
+      gender?: 'male' | 'female' | 'all';
+      income?: { min: number; max: number };
+    };
+    interests: string[];
+    behaviors: string[];
+    locations: string[];
+    customAudience?: string;
+  };
+  
+  // Timeline & Budget
+  startDate: Date;
+  endDate: Date;
+  budget: {
+    total: number;
+    platformDistribution: { platform: string; amount: number }[];
+  };
+  
+  // Content strategy
+  contentPlan: {
+    totalPosts: number;
+    contentTypes: { type: string; percentage: number }[];
+    postingFrequency: { platform: string; postsPerWeek: number }[];
+    themes: string[];
+  };
+  
+  // Performance tracking
+  performance: {
+    totalReach: number;
+    totalEngagement: number;
+    websiteClicks: number;
+    leadsGenerated: number;
+    costPerLead: number;
+    roi: number;
+  };
+  
+  // Posts associated with campaign
+  posts: SocialMediaPost[];
+  
+  status: 'planning' | 'active' | 'paused' | 'completed' | 'cancelled';
+  createdAt: Date;
+}
+
+export interface SocialMediaAnalytics {
+  maklerId: string;
+  period: 'week' | 'month' | 'quarter' | 'year';
+  
+  // Overall performance
+  totalFollowers: { platform: string; count: number; growth: number }[];
+  totalReach: number;
+  totalEngagement: number;
+  engagementRate: number;
+  
+  // Content performance
+  topPosts: {
+    postId: string;
+    platform: string;
+    content: string;
+    engagement: number;
+    reach: number;
+    conversions: number;
+  }[];
+  
+  // Platform breakdown
+  platformMetrics: {
+    platform: string;
+    posts: number;
+    reach: number;
+    engagement: number;
+    followers: number;
+    leadGeneration: number;
+  }[];
+  
+  // Lead generation
+  leadSources: {
+    platform: string;
+    leads: number;
+    conversionRate: number;
+    costPerLead: number;
+  }[];
+  
+  // Competitor analysis
+  competitorInsights?: {
+    name: string;
+    followers: number;
+    engagementRate: number;
+    postsPerWeek: number;
+    topContent: string[];
+  }[];
+  
+  // Recommendations
+  aiRecommendations: {
+    type: 'content' | 'timing' | 'hashtag' | 'platform' | 'audience';
+    suggestion: string;
+    reasoning: string;
+    expectedImpact: 'low' | 'medium' | 'high';
+  }[];
+}
+
+export interface SocialMediaAutomation {
+  id: string;
+  maklerId: string;
+  name: string;
+  
+  // Trigger conditions
+  triggers: {
+    type: 'time_based' | 'event_based' | 'performance_based';
+    condition: string;
+    value?: string | number;
+  }[];
+  
+  // Actions
+  actions: {
+    type: 'post_content' | 'send_dm' | 'comment_response' | 'follow_up' | 'report_generate';
+    platform?: string;
+    templateId?: string;
+    content?: string;
+    delay?: number; // hours
+  }[];
+  
+  // Content rules
+  contentRules: {
+    autoHashtags: boolean;
+    autoMentions: boolean;
+    complianceCheck: boolean;
+    platformOptimization: boolean;
+  };
+  
+  // Performance tracking
+  executionCount: number;
+  lastExecuted?: Date;
+  successRate: number;
+  
+  isActive: boolean;
+  createdAt: Date;
+}
+
+export interface AIContentGenerator {
+  id: string;
+  type: 'post' | 'headline' | 'hashtags' | 'description' | 'script';
+  
+  // Input parameters
+  prompt: string;
+  tone: string;
+  length: 'short' | 'medium' | 'long';
+  platform: string;
+  category: string;
+  
+  // Generated content
+  generatedContent: {
+    text: string;
+    alternatives: string[];
+    confidence: number;
+    complianceScore: number;
+    improvementSuggestions: string[];
+  };
+  
+  // User feedback
+  userRating?: number;
+  userFeedback?: string;
+  wasUsed: boolean;
+  
+  generatedAt: Date;
+}
+
+export interface SocialMediaCompliance {
+  id: string;
+  maklerId: string;
+  
+  // Compliance rules
+  rules: {
+    platform: string;
+    maxHashtags: number;
+    requiredDisclosures: string[];
+    bannedWords: string[];
+    requiresApproval: boolean;
+  }[];
+  
+  // Review queue
+  pendingPosts: {
+    postId: string;
+    platform: string;
+    content: string;
+    submittedAt: Date;
+    priority: 'low' | 'medium' | 'high';
+  }[];
+  
+  // Approval workflow
+  approvers: {
+    userId: string;
+    role: 'compliance_officer' | 'legal_counsel' | 'marketing_manager';
+    permissions: string[];
+  }[];
+  
+  // Audit trail
+  auditLog: {
+    postId: string;
+    action: 'submitted' | 'approved' | 'rejected' | 'modified';
+    userId: string;
+    reason?: string;
+    timestamp: Date;
+  }[];
+}
+
+export interface SocialMediaIntegration {
+  id: string;
+  maklerId: string;
+  platform: 'facebook' | 'instagram' | 'linkedin' | 'tiktok' | 'youtube' | 'twitter';
+  
+  // Authentication
+  accessToken: string;
+  refreshToken?: string;
+  expiresAt?: Date;
+  accountId: string;
+  accountName: string;
+  
+  // Permissions
+  permissions: string[];
+  canPost: boolean;
+  canAnalyze: boolean;
+  canMessage: boolean;
+  
+  // Settings
+  autoPosting: boolean;
+  defaultHashtags: string[];
+  brandingSettings: {
+    logo?: string;
+    watermark?: string;
+    brandColors: string[];
+  };
+  
+  // Sync status
+  lastSync: Date;
+  syncErrors: string[];
+  isActive: boolean;
+  
+  connectedAt: Date;
+}
+
+// Lead Generation from Social Media
+export interface SocialMediaLead {
+  id: string;
+  postId: string;
+  platform: string;
+  maklerId: string;
+  
+  // Lead information
+  socialProfile: {
+    username: string;
+    displayName: string;
+    profileUrl: string;
+    followerCount?: number;
+    isVerified: boolean;
+  };
+  
+  // Interaction
+  interactionType: 'comment' | 'dm' | 'form_fill' | 'link_click' | 'phone_call';
+  message?: string;
+  intent: 'information' | 'quote' | 'appointment' | 'complaint' | 'general';
+  
+  // Lead scoring
+  score: number;
+  qualityIndicators: {
+    profileComplete: boolean;
+    hasContactInfo: boolean;
+    engagementHistory: boolean;
+    networkSize: 'small' | 'medium' | 'large';
+  };
+  
+  // Follow-up
+  status: 'new' | 'contacted' | 'qualified' | 'converted' | 'lost';
+  assignedTo?: string;
+  nextAction?: string;
+  scheduledFollowUp?: Date;
+  
+  createdAt: Date;
+  convertedAt?: Date;
 } 
