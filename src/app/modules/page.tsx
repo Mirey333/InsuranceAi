@@ -70,7 +70,7 @@ const quizQuestions: QuizQuestion[] = [
       {
         id: 'solo',
         text: 'Solo-Makler (nur ich)',
-        weight: { 'leadgen-basic': 3, 'automation-suite': 2, 'whatsapp-business': 3 }
+        weight: { 'leadgen-basic': 3, 'automation-suite': 2, 'communication-center': 3 }
       },
       {
         id: 'small',
@@ -80,12 +80,12 @@ const quizQuestions: QuizQuestion[] = [
       {
         id: 'medium',
         text: '6-20 Mitarbeiter',
-        weight: { 'ai-call-center': 3, 'analytics-pro': 3, 'white-label': 2 }
+        weight: { 'ai-call-center': 3, 'analytics-pro': 3, 'whitelabel-pro': 2 }
       },
       {
         id: 'large',
         text: '20+ Mitarbeiter',
-        weight: { 'enterprise-ai': 3, 'white-label': 3, 'compliance-center': 3 }
+        weight: { 'enterprise-ai-suite': 3, 'whitelabel-pro': 3, 'compliance-shield': 3 }
       }
     ]
   },
@@ -96,22 +96,22 @@ const quizQuestions: QuizQuestion[] = [
       {
         id: 'leads',
         text: 'Zu wenig Leads generieren',
-        weight: { 'campaign-pro': 3, 'leadgen-basic': 2, 'landingpage-builder': 2 }
+        weight: { 'campaign-pro': 3, 'leadgen-basic': 2, 'landingpage-pro': 2 }
       },
       {
         id: 'follow-up',
         text: 'Follow-ups vergessen/zu zeitaufwändig',
-        weight: { 'automation-suite': 3, 'whatsapp-business': 2, 'ai-call-center': 2 }
+        weight: { 'automation-suite': 3, 'communication-center': 2, 'ai-call-center': 2 }
       },
       {
         id: 'conversion',
         text: 'Leads zu Kunden konvertieren',
-        weight: { 'pipeline-advanced': 3, 'contract-builder': 2, 'ai-training': 2 }
+        weight: { 'pipeline-advanced': 3, 'contract-builder': 2, 'ai-training-center': 2 }
       },
       {
         id: 'data',
         text: 'Kundendaten organisieren',
-        weight: { 'crm-complete': 3, 'export-pro': 2, 'analytics-pro': 2 }
+        weight: { 'crm-complete': 3, 'basic-export': 2, 'analytics-pro': 2 }
       }
     ]
   },
@@ -127,17 +127,17 @@ const quizQuestions: QuizQuestion[] = [
       {
         id: 'moderate',
         text: '5-15 Stunden',
-        weight: { 'automation-suite': 3, 'crm-complete': 2, 'export-pro': 2 }
+        weight: { 'automation-suite': 3, 'crm-complete': 2, 'basic-export': 2 }
       },
       {
         id: 'high',
         text: '15-25 Stunden',
-        weight: { 'ai-call-center': 3, 'automation-suite': 2, 'white-label': 2 }
+        weight: { 'ai-call-center': 3, 'automation-suite': 2, 'whitelabel-pro': 2 }
       },
       {
         id: 'excessive',
         text: 'Mehr als 25 Stunden',
-        weight: { 'enterprise-ai': 3, 'ai-call-center': 2, 'automation-suite': 3 }
+        weight: { 'enterprise-ai-suite': 3, 'ai-call-center': 2, 'automation-suite': 3 }
       }
     ]
   },
@@ -148,22 +148,22 @@ const quizQuestions: QuizQuestion[] = [
       {
         id: 'phone',
         text: 'Telefon & persönliche Gespräche',
-        weight: { 'ai-call-center': 3, 'ai-training': 2, 'phone-system': 2 }
+        weight: { 'ai-call-center': 3, 'ai-training-center': 2, 'communication-center': 2 }
       },
       {
         id: 'whatsapp',
         text: 'WhatsApp & Messenger',
-        weight: { 'whatsapp-business': 3, 'automation-suite': 2, 'communication-center': 2 }
+        weight: { 'communication-center': 3, 'automation-suite': 2, 'omnichannel-experience': 2 }
       },
       {
         id: 'email',
         text: 'E-Mail & Briefe',
-        weight: { 'automation-suite': 2, 'export-pro': 2, 'crm-complete': 2 }
+        weight: { 'automation-suite': 2, 'basic-export': 2, 'crm-complete': 2 }
       },
       {
         id: 'mixed',
         text: 'Mix aus allem',
-        weight: { 'communication-center': 3, 'omnichannel': 3, 'crm-complete': 2 }
+        weight: { 'communication-center': 3, 'omnichannel-experience': 3, 'crm-complete': 2 }
       }
     ]
   },
@@ -174,7 +174,7 @@ const quizQuestions: QuizQuestion[] = [
       {
         id: 'beginner',
         text: 'Anfänger - ich brauche einfache Lösungen',
-        weight: { 'leadgen-basic': 3, 'basic-pipeline': 3, 'whatsapp-business': 2 }
+        weight: { 'leadgen-basic': 3, 'basic-pipeline': 3, 'communication-center': 2 }
       },
       {
         id: 'intermediate',
@@ -184,7 +184,7 @@ const quizQuestions: QuizQuestion[] = [
       {
         id: 'advanced',
         text: 'Experte - ich will alles konfigurieren können',
-        weight: { 'white-label': 3, 'enterprise-ai': 3, 'integration-hub': 2 }
+        weight: { 'whitelabel-pro': 3, 'enterprise-ai-suite': 3, 'integration-hub': 2 }
       }
     ]
   },
@@ -210,7 +210,7 @@ const quizQuestions: QuizQuestion[] = [
       {
         id: 'high',
         text: '€70+ pro Monat',
-        weight: { 'enterprise-ai': 3, 'white-label': 2, 'integration-hub': 2 }
+        weight: { 'enterprise-ai-suite': 3, 'whitelabel-pro': 2, 'integration-hub': 2 }
       }
     ]
   }
@@ -279,15 +279,23 @@ function ModuleQuiz() {
   const getRecommendationReasoning = (moduleId: string, userAnswers: { [key: string]: string }): string => {
     const reasoningMap: { [key: string]: string } = {
       'leadgen-basic': 'Perfekt für den Einstieg - einfach zu bedienen und kostenlos',
+      'basic-pipeline': 'Grundlegende Pipeline-Verwaltung für strukturierte Prozesse',
+      'basic-export': 'Standard-Export für PMA und andere Systeme',
       'campaign-pro': 'Ideal für die Lead-Generierung mit professionellen Marketing-Tools',
       'automation-suite': 'Spart viel Zeit bei Follow-ups und administrativen Aufgaben',
       'pipeline-advanced': 'Optimiert Ihre Verkaufsprozesse mit intelligenten Features',
+      'contract-builder': 'Individuell konfigurierbare Antrags- und Vertragsstrecken',
       'crm-complete': 'Vollständige Kundenverwaltung für wachsende Unternehmen',
+      'landingpage-pro': 'Professionelle Landing Pages für bessere Conversions',
       'ai-call-center': 'Revolutioniert Ihre Telefonkommunikation mit KI-Unterstützung',
-      'whatsapp-business': 'Moderne Kundenkommunikation über WhatsApp',
+      'ai-training-center': 'Digitales Schulungszentrum mit KI-Rollenspielen',
+      'communication-center': 'Zentrale für alle Kundenkommunikation',
       'analytics-pro': 'Datenbasierte Entscheidungen für bessere Ergebnisse',
-      'white-label': 'Professionelle Lösung mit Ihrem eigenen Branding',
-      'enterprise-ai': 'Enterprise-Lösung für große Unternehmen mit maximaler Automatisierung'
+      'integration-hub': 'Erweiterte Integrationen zu CRM-Systemen und APIs',
+      'whitelabel-pro': 'Professionelle Lösung mit Ihrem eigenen Branding',
+      'compliance-shield': 'Erweiterte Compliance-Features für regulierte Märkte',
+      'enterprise-ai-suite': 'Enterprise-Lösung für große Unternehmen mit maximaler Automatisierung',
+      'omnichannel-experience': 'Nahtlose Kundenerfahrung über alle Touchpoints'
     };
 
     return reasoningMap[moduleId] || 'Empfohlen basierend auf Ihren Antworten';
@@ -366,7 +374,13 @@ function ModuleQuiz() {
                 </div>
 
                 <div className="text-xs text-gray-500 mb-4">
-                  <p className="line-clamp-2">{module.description}</p>
+                  <p className="overflow-hidden" style={{ 
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical'
+                  }}>
+                    {module.description}
+                  </p>
                 </div>
 
                 <button className={`
@@ -872,17 +886,6 @@ export default function ModulesPage() {
   const basicModules = modules.filter(m => m.category === 'basic');
   const premiumModules = modules.filter(m => m.category === 'premium');
   const enterpriseModules = modules.filter(m => m.category === 'enterprise');
-
-  const getIcon = (iconName: string) => {
-    const icons: { [key: string]: any } = {
-      Users, Target, Zap, BarChart3, Settings, Palette, MessageCircle, FileText, Brain, Shield,
-      Phone, Calendar, MessageSquare, BookOpen, Mic, HeadphonesIcon, GraduationCap, Bot, 
-      FileCode, Lightbulb, PhoneCall, Heart, Mail, Bell, CreditCard, UserCheck, Activity,
-      Database, Globe, Lock, TrendingUp, Clock, Workflow
-    };
-    const IconComponent = icons[iconName] || Users;
-    return <IconComponent className="w-6 h-6" />;
-  };
 
   const getCategoryBadge = (category: string) => {
     const styles = {
