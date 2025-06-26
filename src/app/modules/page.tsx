@@ -1,6 +1,7 @@
 'use client';
 
 import { Module } from '@/types';
+import { useState } from 'react';
 import { 
   Users, 
   Target, 
@@ -36,8 +37,434 @@ import {
   Bell,
   CreditCard,
   UserCheck,
-  Activity
+  Activity,
+  HelpCircle,
+  ArrowRight,
+  RefreshCw,
+  Award
 } from 'lucide-react';
+
+// Quiz-System Typen
+interface QuizQuestion {
+  id: string;
+  question: string;
+  answers: {
+    id: string;
+    text: string;
+    weight: { [key: string]: number };
+  }[];
+}
+
+interface QuizResult {
+  moduleId: string;
+  score: number;
+  reasoning: string;
+}
+
+// Quiz-Fragen
+const quizQuestions: QuizQuestion[] = [
+  {
+    id: 'company-size',
+    question: 'Wie groß ist Ihr Versicherungsunternehmen?',
+    answers: [
+      {
+        id: 'solo',
+        text: 'Solo-Makler (nur ich)',
+        weight: { 'leadgen-basic': 3, 'automation-suite': 2, 'whatsapp-business': 3 }
+      },
+      {
+        id: 'small',
+        text: '2-5 Mitarbeiter',
+        weight: { 'campaign-pro': 2, 'crm-complete': 3, 'pipeline-advanced': 2 }
+      },
+      {
+        id: 'medium',
+        text: '6-20 Mitarbeiter',
+        weight: { 'ai-call-center': 3, 'analytics-pro': 3, 'white-label': 2 }
+      },
+      {
+        id: 'large',
+        text: '20+ Mitarbeiter',
+        weight: { 'enterprise-ai': 3, 'white-label': 3, 'compliance-center': 3 }
+      }
+    ]
+  },
+  {
+    id: 'main-challenge',
+    question: 'Was ist Ihre größte Herausforderung?',
+    answers: [
+      {
+        id: 'leads',
+        text: 'Zu wenig Leads generieren',
+        weight: { 'campaign-pro': 3, 'leadgen-basic': 2, 'landingpage-builder': 2 }
+      },
+      {
+        id: 'follow-up',
+        text: 'Follow-ups vergessen/zu zeitaufwändig',
+        weight: { 'automation-suite': 3, 'whatsapp-business': 2, 'ai-call-center': 2 }
+      },
+      {
+        id: 'conversion',
+        text: 'Leads zu Kunden konvertieren',
+        weight: { 'pipeline-advanced': 3, 'contract-builder': 2, 'ai-training': 2 }
+      },
+      {
+        id: 'data',
+        text: 'Kundendaten organisieren',
+        weight: { 'crm-complete': 3, 'export-pro': 2, 'analytics-pro': 2 }
+      }
+    ]
+  },
+  {
+    id: 'time-spent',
+    question: 'Wie viel Zeit verbringen Sie wöchentlich mit administrativen Aufgaben?',
+    answers: [
+      {
+        id: 'minimal',
+        text: 'Weniger als 5 Stunden',
+        weight: { 'leadgen-basic': 2, 'basic-pipeline': 2 }
+      },
+      {
+        id: 'moderate',
+        text: '5-15 Stunden',
+        weight: { 'automation-suite': 3, 'crm-complete': 2, 'export-pro': 2 }
+      },
+      {
+        id: 'high',
+        text: '15-25 Stunden',
+        weight: { 'ai-call-center': 3, 'automation-suite': 2, 'white-label': 2 }
+      },
+      {
+        id: 'excessive',
+        text: 'Mehr als 25 Stunden',
+        weight: { 'enterprise-ai': 3, 'ai-call-center': 2, 'automation-suite': 3 }
+      }
+    ]
+  },
+  {
+    id: 'communication',
+    question: 'Wie kommunizieren Sie hauptsächlich mit Kunden?',
+    answers: [
+      {
+        id: 'phone',
+        text: 'Telefon & persönliche Gespräche',
+        weight: { 'ai-call-center': 3, 'ai-training': 2, 'phone-system': 2 }
+      },
+      {
+        id: 'whatsapp',
+        text: 'WhatsApp & Messenger',
+        weight: { 'whatsapp-business': 3, 'automation-suite': 2, 'communication-center': 2 }
+      },
+      {
+        id: 'email',
+        text: 'E-Mail & Briefe',
+        weight: { 'automation-suite': 2, 'export-pro': 2, 'crm-complete': 2 }
+      },
+      {
+        id: 'mixed',
+        text: 'Mix aus allem',
+        weight: { 'communication-center': 3, 'omnichannel': 3, 'crm-complete': 2 }
+      }
+    ]
+  },
+  {
+    id: 'tech-level',
+    question: 'Wie schätzen Sie Ihre technischen Fähigkeiten ein?',
+    answers: [
+      {
+        id: 'beginner',
+        text: 'Anfänger - ich brauche einfache Lösungen',
+        weight: { 'leadgen-basic': 3, 'basic-pipeline': 3, 'whatsapp-business': 2 }
+      },
+      {
+        id: 'intermediate',
+        text: 'Fortgeschritten - ich kann neue Tools lernen',
+        weight: { 'campaign-pro': 2, 'automation-suite': 2, 'crm-complete': 2 }
+      },
+      {
+        id: 'advanced',
+        text: 'Experte - ich will alles konfigurieren können',
+        weight: { 'white-label': 3, 'enterprise-ai': 3, 'integration-hub': 2 }
+      }
+    ]
+  },
+  {
+    id: 'budget',
+    question: 'Wie viel möchten Sie monatlich für ein Modul investieren?',
+    answers: [
+      {
+        id: 'free',
+        text: 'Kostenlos (nur Grundfunktionen)',
+        weight: { 'leadgen-basic': 3, 'basic-pipeline': 3, 'basic-export': 3 }
+      },
+      {
+        id: 'low',
+        text: '€20-40 pro Monat',
+        weight: { 'campaign-pro': 2, 'automation-suite': 2, 'pipeline-advanced': 2 }
+      },
+      {
+        id: 'medium',
+        text: '€40-70 pro Monat',
+        weight: { 'crm-complete': 2, 'ai-call-center': 2, 'analytics-pro': 2 }
+      },
+      {
+        id: 'high',
+        text: '€70+ pro Monat',
+        weight: { 'enterprise-ai': 3, 'white-label': 2, 'integration-hub': 2 }
+      }
+    ]
+  }
+];
+
+// Helper-Funktionen
+const getIcon = (iconName: string) => {
+  const icons: { [key: string]: any } = {
+    Users, Target, Zap, BarChart3, Settings, Palette, MessageCircle, FileText, Brain, Shield,
+    Phone, Calendar, MessageSquare, BookOpen, Mic, HeadphonesIcon, GraduationCap, Bot, 
+    FileCode, Lightbulb, PhoneCall, Heart, Mail, Bell, CreditCard, UserCheck, Activity,
+    Database, Globe, Lock, TrendingUp, Clock, Workflow
+  };
+  const IconComponent = icons[iconName] || Users;
+  return <IconComponent className="w-6 h-6" />;
+};
+
+// Quiz-Komponente
+function ModuleQuiz() {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState<{ [key: string]: string }>({});
+  const [showResult, setShowResult] = useState(false);
+  const [quizResult, setQuizResult] = useState<QuizResult[]>([]);
+
+  const handleAnswer = (questionId: string, answerId: string) => {
+    const newAnswers = { ...answers, [questionId]: answerId };
+    setAnswers(newAnswers);
+
+    if (currentQuestion < quizQuestions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      calculateResult(newAnswers);
+    }
+  };
+
+  const calculateResult = (userAnswers: { [key: string]: string }) => {
+    const moduleScores: { [key: string]: number } = {};
+
+    // Berechne Scores für jedes Modul basierend auf Antworten
+    Object.entries(userAnswers).forEach(([questionId, answerId]) => {
+      const question = quizQuestions.find(q => q.id === questionId);
+      if (question) {
+        const answer = question.answers.find(a => a.id === answerId);
+        if (answer) {
+          Object.entries(answer.weight).forEach(([moduleId, weight]) => {
+            moduleScores[moduleId] = (moduleScores[moduleId] || 0) + weight;
+          });
+        }
+      }
+    });
+
+    // Sortiere Module nach Score und erstelle Empfehlungen
+    const sortedResults = Object.entries(moduleScores)
+      .map(([moduleId, score]) => ({
+        moduleId,
+        score,
+        reasoning: getRecommendationReasoning(moduleId, userAnswers)
+      }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3); // Top 3 Empfehlungen
+
+    setQuizResult(sortedResults);
+    setShowResult(true);
+  };
+
+  const getRecommendationReasoning = (moduleId: string, userAnswers: { [key: string]: string }): string => {
+    const reasoningMap: { [key: string]: string } = {
+      'leadgen-basic': 'Perfekt für den Einstieg - einfach zu bedienen und kostenlos',
+      'campaign-pro': 'Ideal für die Lead-Generierung mit professionellen Marketing-Tools',
+      'automation-suite': 'Spart viel Zeit bei Follow-ups und administrativen Aufgaben',
+      'pipeline-advanced': 'Optimiert Ihre Verkaufsprozesse mit intelligenten Features',
+      'crm-complete': 'Vollständige Kundenverwaltung für wachsende Unternehmen',
+      'ai-call-center': 'Revolutioniert Ihre Telefonkommunikation mit KI-Unterstützung',
+      'whatsapp-business': 'Moderne Kundenkommunikation über WhatsApp',
+      'analytics-pro': 'Datenbasierte Entscheidungen für bessere Ergebnisse',
+      'white-label': 'Professionelle Lösung mit Ihrem eigenen Branding',
+      'enterprise-ai': 'Enterprise-Lösung für große Unternehmen mit maximaler Automatisierung'
+    };
+
+    return reasoningMap[moduleId] || 'Empfohlen basierend auf Ihren Antworten';
+  };
+
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setAnswers({});
+    setShowResult(false);
+    setQuizResult([]);
+  };
+
+  const getModuleById = (moduleId: string) => {
+    return modules.find(m => m.id === moduleId);
+  };
+
+  if (showResult) {
+    return (
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 mb-12 border border-blue-200">
+        <div className="text-center mb-8">
+          <Award className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Ihre persönlichen Empfehlungen</h2>
+          <p className="text-gray-600">Basierend auf Ihren Antworten haben wir die perfekten Module für Sie gefunden</p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          {quizResult.map((result, index) => {
+            const module = getModuleById(result.moduleId);
+            if (!module) return null;
+
+            return (
+              <div key={result.moduleId} className={`
+                relative bg-white rounded-xl p-6 border-2 transition-all duration-300
+                ${index === 0 ? 'border-blue-500 shadow-lg scale-105' : 'border-gray-200 hover:border-blue-300'}
+              `}>
+                {index === 0 && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                      Top Empfehlung
+                    </span>
+                  </div>
+                )}
+                
+                <div className="text-center mb-4">
+                  <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                    {getIcon(module.icon)}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900">{module.name}</h3>
+                  <p className="text-sm text-gray-600 mt-1">{result.reasoning}</p>
+                </div>
+
+                <div className="space-y-2 mb-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Match-Score:</span>
+                    <div className="flex items-center">
+                      <div className="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                        <div 
+                          className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+                          style={{ width: `${(result.score / 18) * 100}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-sm font-semibold text-blue-600">
+                        {Math.round((result.score / 18) * 100)}%
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center pt-2">
+                    <span className="text-2xl font-bold text-gray-900">
+                      {module.monthlyPrice === 0 ? 'Kostenlos' : `€${module.monthlyPrice}`}
+                    </span>
+                    {module.monthlyPrice > 0 && (
+                      <span className="text-sm text-gray-600">/Monat</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="text-xs text-gray-500 mb-4">
+                  <p className="line-clamp-2">{module.description}</p>
+                </div>
+
+                <button className={`
+                  w-full py-2 px-4 rounded-lg font-semibold transition-all duration-200
+                  ${index === 0 
+                    ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }
+                `}>
+                  {index === 0 ? 'Jetzt starten' : 'Mehr erfahren'}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="text-center">
+          <button
+            onClick={resetQuiz}
+            className="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Quiz wiederholen
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const currentQ = quizQuestions[currentQuestion];
+  const progress = ((currentQuestion + 1) / quizQuestions.length) * 100;
+
+  return (
+    <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 mb-12 border border-blue-200">
+      <div className="max-w-2xl mx-auto">
+        <div className="text-center mb-8">
+          <HelpCircle className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Modul-Finder Quiz</h2>
+          <p className="text-gray-600">Finden Sie in 2 Minuten heraus, welches Modul perfekt zu Ihnen passt</p>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-sm text-gray-600">
+              Frage {currentQuestion + 1} von {quizQuestions.length}
+            </span>
+            <span className="text-sm text-blue-600 font-semibold">
+              {Math.round(progress)}% abgeschlossen
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out"
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+        </div>
+
+        {/* Question */}
+        <div className="bg-white rounded-xl p-6 mb-6 border border-gray-200">
+          <h3 className="text-xl font-semibold text-gray-900 mb-6 text-center">
+            {currentQ.question}
+          </h3>
+
+          <div className="space-y-3">
+            {currentQ.answers.map((answer) => (
+              <button
+                key={answer.id}
+                onClick={() => handleAnswer(currentQ.id, answer.id)}
+                className="w-full p-4 text-left bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-lg transition-all duration-200 group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-900 group-hover:text-blue-900 font-medium">
+                    {answer.text}
+                  </span>
+                  <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all duration-200" />
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Back Button (nur wenn nicht erste Frage) */}
+        {currentQuestion > 0 && (
+          <div className="text-center">
+            <button
+              onClick={() => setCurrentQuestion(currentQuestion - 1)}
+              className="text-gray-600 hover:text-gray-800 text-sm font-medium"
+            >
+              ← Zurück zur vorherigen Frage
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 const modules: Module[] = [
   // Grundpaket Module (inklusive)
@@ -477,6 +904,13 @@ export default function ModulesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 pt-20">
+      {/* Quiz Section */}
+      <section className="px-4 pb-12">
+        <div className="max-w-7xl mx-auto">
+          <ModuleQuiz />
+        </div>
+      </section>
+
       {/* Header */}
       <section className="pb-12 px-4">
         <div className="max-w-7xl mx-auto text-center">

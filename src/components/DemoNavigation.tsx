@@ -89,17 +89,9 @@ export default function DemoNavigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="9" cy="12" r="2" fill="white" opacity="0.9"/>
-                <circle cx="15" cy="12" r="2" fill="white" opacity="0.9"/>
-                <circle cx="12" cy="18" r="2" fill="white" opacity="0.9"/>
-                <circle cx="12" cy="6" r="2" fill="#06B6D4"/>
-                <line x1="9" y1="12" x2="15" y2="12" stroke="white" strokeWidth="1.5"/>
-                <line x1="9" y1="12" x2="12" y2="18" stroke="white" strokeWidth="1.5"/>
-                <line x1="15" y1="12" x2="12" y2="18" stroke="white" strokeWidth="1.5"/>
-                <line x1="9" y1="12" x2="12" y2="6" stroke="#06B6D4" strokeWidth="1.5"/>
-                <line x1="15" y1="12" x2="12" y2="6" stroke="#06B6D4" strokeWidth="1.5"/>
-              </svg>
+              <div className="w-5 h-5 flex items-center justify-center text-white text-sm font-bold">
+                AI
+              </div>
             </div>
             <span className="text-xl font-semibold text-gray-900">
               InsureAI Pro
